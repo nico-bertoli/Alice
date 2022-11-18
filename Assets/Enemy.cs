@@ -9,7 +9,7 @@ public class Enemy : GridMover
     private List<Transform> wayPoints;
     private int wayPointIndex = 1;
 
-    private void Awake() {
+    protected override void Start() {
         WorldGrid.Instance.OnGridGenerationCompleted += Init;
     }
 

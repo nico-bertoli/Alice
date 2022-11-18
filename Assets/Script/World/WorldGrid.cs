@@ -43,21 +43,28 @@ public class WorldGrid : Singleton<WorldGrid> {
             
     }
 
-    //---------------------------------------- registering cells
+    private void Start() {
+        StartCoroutine(CompleteGridGeneration());
+    }
 
-    public void RegisterCell(WorldCell _cell) {
+    private IEnumerator CompleteGridGeneration() {
+        do {
+            yield return null;
+        } while (WorldCell.registeredCells != WorldCell.numCells);
+
+        Debug.Log("matrix generation completed");
+        OnGridGenerationCompleted();
+    }
+
+//---------------------------------------- registering cells
+
+public void RegisterCell(WorldCell _cell) {
 
         if (cells == null)
             CreateMatrix();
 
         tryGeneratingNotExistingCell(_cell);
-        tryCoveringExistingCell(_cell);
-
-        if (WorldCell.registeredCells == WorldCell.numCells) {
-            Debug.Log("matrix generation completed");
-            OnGridGenerationCompleted();
-        }
-            
+        tryCoveringExistingCell(_cell);            
     }
 
     /// <summary>

@@ -9,7 +9,7 @@ public class GridMover : MonoBehaviour
     protected WorldCell cell;
     protected WorldCell target;
 
-    private void Awake() {
+    protected virtual void Start() {
         WorldGrid.Instance.OnGridGenerationCompleted += InitPosition;
     }
 
