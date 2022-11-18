@@ -8,35 +8,39 @@ public class WorldGrid : Singleton<WorldGrid> {
     private WorldCell[,] cells;
 
     public enum eDirections { UP,RIGHT,BOTTOM,LEFT}
+    public bool Initialized { get { return cells != null; } }
 
     public static eDirections VectorToDir(Vector2 _vec) {
-        if(_vec == Vector2.left)return eDirections.UP;
-        if(_vec == Vector2.right)return eDirections.BOTTOM;
-        if(_vec == Vector2.up)return eDirections.LEFT;
-        else return eDirections.UP;
+        if(_vec == Vector2.left)return eDirections.LEFT;
+        if(_vec == Vector2.right)return eDirections.RIGHT;
+        if(_vec == Vector2.up)return eDirections.UP;
+        else return eDirections.BOTTOM;
     }
 
     public WorldCell GetAdjacentCell(WorldCell _cell, eDirections _dir) {
         WorldCell ris = null;
         switch (_dir) {
             case eDirections.UP:
-                ris = cells[_cell.M-1,_cell.N];
+                if(_cell.M != 0)ris = cells[_cell.M-1,_cell.N];
                 break;
             case eDirections.BOTTOM:
-                ris = cells[_cell.M+1, _cell.N];
+                if(_cell.M != nRows-1) ris = cells[_cell.M+1, _cell.N];
                 break;
             case eDirections.RIGHT:
-                ris = cells[_cell.M, _cell.N+1];
+                if(_cell.N != nCols-1) ris = cells[_cell.M, _cell.N+1];
                 break;
             case eDirections.LEFT:
-                ris = cells[_cell.M, _cell.N-1];
+                if(_cell.N!= 0) ris = cells[_cell.M, _cell.N-1];
                 break;
         }
 
-        if (Mathf.Abs(ris.Height - _cell.Height) <= 1)
-            return ris;
-        else
-            return null;
+        if (ris != null && Mathf.Abs(ris.Height - _cell.Height) > 1) ris = null;
+
+        if(ris == null) Debug.Log("target cannot be reached");
+        else Debug.Log("new target:" + ris.M + "," + ris.N + " can be reached");
+
+        return ris;
+            
     }
 
 
