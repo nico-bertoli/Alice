@@ -9,8 +9,8 @@ public class GridMover : MonoBehaviour
     protected WorldCell cell;
     protected WorldCell target;
 
-    private void Start() {
-        StartCoroutine(InitPosition());
+    private void Awake() {
+        WorldGrid.Instance.OnGridGenerationCompleted += InitPosition;
     }
 
     protected virtual void Update() {
@@ -32,14 +32,8 @@ public class GridMover : MonoBehaviour
     /// Centers the object in its starting cell
     /// </summary>
     /// <returns></returns>
-    private IEnumerator InitPosition() {
-
-        while (cell == null) {
-            yield return null;
-            if (WorldGrid.Instance.Initialized)
-                cell = WorldGrid.Instance.GetCellAtPos(transform.position);
-        }
-
+    private void InitPosition() {
+        cell = WorldGrid.Instance.GetCellAtPos(transform.position);
         transform.position = cell.Position;
     }
 }

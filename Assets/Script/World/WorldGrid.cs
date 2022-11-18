@@ -1,14 +1,17 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WorldGrid : Singleton<WorldGrid> {
+
     private int nCols = 0;
     private int nRows = 0;
     private WorldCell[,] cells;
 
     public enum eDirections { UP,RIGHT,BOTTOM,LEFT}
     public bool Initialized { get { return cells != null; } }
+    public Action OnGridGenerationCompleted;
 
     public static eDirections VectorToDir(Vector2 _vec) {
         if(_vec == Vector2.left)return eDirections.LEFT;
@@ -36,28 +39,52 @@ public class WorldGrid : Singleton<WorldGrid> {
 
         if (ris != null && Mathf.Abs(ris.Height - _cell.Height) > 1) ris = null;
 
-        if(ris == null) Debug.Log("target cannot be reached");
-        else Debug.Log("new target:" + ris.M + "," + ris.N + " can be reached");
-
         return ris;
             
     }
 
+    //---------------------------------------- registering cells
 
     public void RegisterCell(WorldCell _cell) {
 
         if (cells == null)
             CreateMatrix();
 
-        if (cells[_cell.M, _cell.N] == null)
-            cells[_cell.M, _cell.N] = _cell;
-        else if ( cells[_cell.M, _cell.N].Height < _cell.Height) {
+        tryGeneratingNotExistingCell(_cell);
+        tryCoveringExistingCell(_cell);
+
+        if (WorldCell.registeredCells == WorldCell.numCells) {
+            Debug.Log("matrix generation completed");
+            OnGridGenerationCompleted();
+        }
+            
+    }
+
+    /// <summary>
+    /// if cell is not present, inits it with given cell
+    /// </summary>
+    /// <param name="_cell"></param>
+    private void tryGeneratingNotExistingCell(WorldCell _cell) {
+        if (cells[_cell.M, _cell.N] == null) cells[_cell.M, _cell.N] = _cell;
+    }
+    /// <summary>
+    /// if another cell is already present, keeps the higer one
+    /// </summary>
+    /// <param name="_cell"></param>
+    private void tryCoveringExistingCell(WorldCell _cell) {
+
+        if (cells[_cell.M, _cell.N] == _cell) return;
+
+        if (cells[_cell.M, _cell.N].Height < _cell.Height) {
             Destroy(cells[_cell.M, _cell.N]);
             cells[_cell.M, _cell.N] = _cell;
         }
-        else
+        else {
             Destroy(_cell);
+        }
     }
+
+    //---------------------------------------------
 
     private void CreateMatrix() {
         nCols = WorldCell.maxN + 1;
