@@ -20,5 +20,9 @@ public class WorldCell : MonoBehaviour
     public int M { get { return (int)transform.position.x; } }
     public int Height { get {
             return (int)transform.position.y;
-        } }
+    }}
+
+    public Vector3 Position { get {
+            return (new Vector3(M, Height + 0.5f, N));
+    }}
 }
