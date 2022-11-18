@@ -9,12 +9,8 @@ public class Enemy : GridMover
     private List<Transform> wayPoints;
     private int wayPointIndex = 1;
 
-    private void Start() {
-        for(int i = 0; i<wayPointsContainer.childCount; i++) {
-            wayPoints.Add(wayPointsContainer.GetChild(i));
-            Debug.Log("a");
-        }
-            
+    private void Awake() {
+        WorldGrid.Instance.OnGridGenerationCompleted += Init;
     }
 
     protected override void Update() {
@@ -23,10 +19,17 @@ public class Enemy : GridMover
     }
 
     private void SetupTarget() {
-        if(wayPoints.Count > 0 && target == null) {
+        if(wayPoints != null && wayPoints.Count > 0 && target == null) {
+            Debug.Log("setup target");
             target = WorldGrid.Instance.GetCellAtPos(wayPoints[wayPointIndex++].position);
             if (wayPointIndex == wayPoints.Count)
                 wayPointIndex = 0;
         }
+    }
+
+    private void Init() {
+        wayPoints = new List<Transform>();
+        for (int i = 0; i < wayPointsContainer.childCount; i++)
+            wayPoints.Add(wayPointsContainer.GetChild(i));
     }
 }
