@@ -66,6 +66,11 @@ public class WorldGrid : Singleton<WorldGrid> {
         Debug.Log("Created matrix of size: "+nRows + "," + nCols);
     }
 
+    /// <summary>
+    /// Returns the cell realative to this object position
+    /// </summary>
+    /// <param name="_pos"></param>
+    /// <returns></returns>
     public WorldCell GetCellAtPos(Vector3 _pos) {
         int M = (int)_pos.x;
         int N = (int)_pos.z;

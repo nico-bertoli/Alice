@@ -4,16 +4,30 @@ using UnityEngine;
 
 public class Player : GridMover
 {
+    /// <summary>
+    /// Moves player in adjacent cell in given direction (if possible)
+    /// </summary>
+    /// <param name="_dir">direction to move torwards</param>
+    public void MoveToAdjacentCell(WorldGrid.eDirections _dir) {
+        if (target == null) {
+            target = WorldGrid.Instance.GetAdjacentCell(cell, _dir);
+        }
+    }
 
     protected override void Update() {
-        readInput();
+        readMovementInput();
         base.Update();
     }
 
-    private void readInput() {
+    /// <summary>
+    /// Reads movement input from input manager
+    /// </summary>
+    private void readMovementInput() {
         if(target == null && InputManager.Instance.IsMoving) {
-            SetNewTarget(WorldGrid.VectorToDir(InputManager.Instance.MoveDirection));
+            MoveToAdjacentCell(WorldGrid.VectorToDir(InputManager.Instance.MoveDirection));
         }
     }
+
+
 
 }

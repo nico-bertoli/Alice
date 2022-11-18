@@ -13,36 +13,33 @@ public class GridMover : MonoBehaviour
         StartCoroutine(InitPosition());
     }
 
-    private IEnumerator InitPosition() {
-
-        while (cell == null) {
-            yield return null;
-            if(WorldGrid.Instance.Initialized)
-                cell = WorldGrid.Instance.GetCellAtPos(transform.position);
-        }
-            
-        transform.position = cell.Position;
-    }
-
-    public void SetNewTarget(WorldGrid.eDirections _dir) {
-        if (target == null) {
-            target = WorldGrid.Instance.GetAdjacentCell(cell, _dir);
-        }
-    }
-
     protected virtual void Update() {
         MoveToTarget();
     }
 
     private void MoveToTarget() {
-        if (target != null) {
-            Debug.Log("moving torwards target");
+        if (target) {
             transform.position = Vector3.MoveTowards(transform.position, target.Position, speed * Time.deltaTime);
+            cell = WorldGrid.Instance.GetCellAtPos(transform.position);
             if(Vector3.Distance(transform.position, target.Position) < Mathf.Epsilon) {
                 transform.position = target.Position;
-                cell = target;
                 target = null;
             }
         }
+    }
+
+    /// <summary>
+    /// Centers the object in its starting cell
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator InitPosition() {
+
+        while (cell == null) {
+            yield return null;
+            if (WorldGrid.Instance.Initialized)
+                cell = WorldGrid.Instance.GetCellAtPos(transform.position);
+        }
+
+        transform.position = cell.Position;
     }
 }
