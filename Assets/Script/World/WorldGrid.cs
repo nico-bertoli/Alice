@@ -5,14 +5,30 @@ using UnityEngine;
 
 public class WorldGrid : Singleton<WorldGrid> {
 
+    /// <summary>
+    /// number of columns
+    /// </summary>
     private int nCols = 0;
+    /// <summary>
+    /// number of rows
+    /// </summary>
     private int nRows = 0;
     private WorldCell[,] cells;
 
     public enum eDirections { UP,RIGHT,BOTTOM,LEFT}
-    public bool Initialized { get { return cells != null; } }
-    public Action OnGridGenerationCompleted;
 
+    /// <summary>
+    /// Tells you if grid has been completely initialized
+    /// </summary>
+    public bool Initialized { get { return cells != null; } }
+
+    public Action OnGridGenerationCompleted;
+    
+    /// <summary>
+    /// Converts vector 2 to direction
+    /// </summary>
+    /// <param name="_vec"></param>
+    /// <returns></returns>
     public static eDirections VectorToDir(Vector2 _vec) {
         if(_vec == Vector2.left)return eDirections.LEFT;
         if(_vec == Vector2.right)return eDirections.RIGHT;
@@ -20,6 +36,12 @@ public class WorldGrid : Singleton<WorldGrid> {
         else return eDirections.BOTTOM;
     }
 
+    /// <summary>
+    /// returns adjacent cell in given direction (null if not existing)
+    /// </summary>
+    /// <param name="_cell"></param>
+    /// <param name="_dir"></param>
+    /// <returns></returns>
     public WorldCell GetAdjacentCell(WorldCell _cell, eDirections _dir) {
         WorldCell ris = null;
         switch (_dir) {
