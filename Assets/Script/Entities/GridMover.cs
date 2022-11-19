@@ -3,13 +3,16 @@ using UnityEngine;
 /// <summary>
 /// Object that can move on world grid
 /// </summary>
-public class GridMover : MonoBehaviour
+public abstract class GridMover : MonoBehaviour
 {
     [SerializeField] protected float moveSpeed;
     [SerializeField] private float rotationSpeed;
 
-    protected WorldCell currentCell;
+    public WorldCell CurrentCell { get; private set; }
     protected WorldCell targetCell;
+
+    private WorldCell previousCell;
+    private Vector3 previousForward;
 
     protected virtual void Start() {
         WorldGrid.Instance.OnGridGenerationCompleted += InitPosition;
@@ -26,7 +29,11 @@ public class GridMover : MonoBehaviour
     private void MoveToTarget() {
         if (targetCell) {
             transform.position = Vector3.MoveTowards(transform.position, targetCell.Position, moveSpeed * Time.deltaTime);
-            currentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
+            CurrentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
+            if(previousCell != CurrentCell) {
+                OnCellChanged();
+                previousCell = CurrentCell;
+            }
             if(Vector3.Distance(transform.position, targetCell.Position) < Mathf.Epsilon) {
                 transform.position = targetCell.Position;
                 targetCell = null;
@@ -39,17 +46,27 @@ public class GridMover : MonoBehaviour
     /// </summary>
     /// <returns></returns>
     private void InitPosition() {
-        currentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
-        transform.position = currentCell.Position;
+        CurrentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
+        transform.position = CurrentCell.Position;
     }
 
     private void RotateTorwardsTarget() {
         if (targetCell) {
             Vector3 forward = (targetCell.Position - transform.position).normalized;
             if (forward != Vector3.zero) {
+
+                if(forward != previousForward) {
+                    OnDirectionChanged();
+                    previousForward = forward;
+                }
+
                 Quaternion toRot = Quaternion.LookRotation(forward, transform.up);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, toRot, rotationSpeed * Time.deltaTime);
             }
         }
     }
+
+    protected abstract void OnDirectionChanged();
+    protected abstract void OnCellChanged();
+
 }

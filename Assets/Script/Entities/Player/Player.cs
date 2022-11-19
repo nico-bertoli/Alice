@@ -11,8 +11,16 @@ public class Player : GridMover
     /// <param name="_dir">direction to move torwards</param>
     public void MoveToAdjacentCell(WorldGrid.eDirections _dir) {
         if (targetCell == null) {
-            targetCell = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
+            targetCell = WorldGrid.Instance.GetAdjacentCell(CurrentCell, _dir);
         }
+    }
+
+    protected override void OnCellChanged() {
+        
+    }
+
+    protected override void OnDirectionChanged() {
+
     }
 
     protected override void Update() {

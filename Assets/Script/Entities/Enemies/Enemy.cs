@@ -5,11 +5,13 @@ using UnityEngine;
 public class Enemy : GridMover
 {
     [SerializeField] Transform wayPointsContainer;
+    [SerializeField] Transform SpottingManagersContainer;
     
     /// <summary>
     /// waypoints list
     /// </summary>
     private List<Transform> waypoints;
+    private List<SpottingAreaManager> spottingManagers;
     /// <summary>
     /// next waypoint index
     /// </summary>
@@ -43,5 +45,19 @@ public class Enemy : GridMover
         waypoints = new List<Transform>();
         for (int i = 0; i < wayPointsContainer.childCount; i++)
             waypoints.Add(wayPointsContainer.GetChild(i));
+
+        spottingManagers = new List<SpottingAreaManager>();
+        for (int i = 0; i < SpottingManagersContainer.childCount; i++)
+            spottingManagers.Add(SpottingManagersContainer.GetChild(i).GetComponent<SpottingAreaManager>());
+    }
+
+    protected override void OnDirectionChanged() {
+        foreach (SpottingAreaManager manager in spottingManagers)
+            manager.TraslateArea();
+    }
+
+    protected override void OnCellChanged() {
+        foreach (SpottingAreaManager manager in spottingManagers)
+            manager.HardSetArea();
     }
 }

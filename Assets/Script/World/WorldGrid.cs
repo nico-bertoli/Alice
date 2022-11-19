@@ -140,6 +140,10 @@ public void RegisterCell(WorldCell _cell) {
     public WorldCell GetCellAtPos(Vector3 _pos) {
         int M = (int)_pos.x;
         int N = (int)_pos.z;
-        return cells[M, N];
+
+        if (M >= 0 && N >= 0 && M < nRows && N < nCols)
+            return cells[M, N];
+        else
+            return null;
     }
 }
