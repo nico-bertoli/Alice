@@ -5,7 +5,8 @@ using UnityEngine;
 /// </summary>
 public class GridMover : MonoBehaviour
 {
-    [SerializeField] protected float speed;
+    [SerializeField] protected float moveSpeed;
+    [SerializeField] private float rotationSpeed;
 
     protected WorldCell currentCell;
     protected WorldCell targetCell;
@@ -16,6 +17,7 @@ public class GridMover : MonoBehaviour
 
     protected virtual void Update() {
         MoveToTarget();
+        RotateTorwardsTarget();
     }
 
     /// <summary>
@@ -23,7 +25,7 @@ public class GridMover : MonoBehaviour
     /// </summary>
     private void MoveToTarget() {
         if (targetCell) {
-            transform.position = Vector3.MoveTowards(transform.position, targetCell.Position, speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, targetCell.Position, moveSpeed * Time.deltaTime);
             currentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
             if(Vector3.Distance(transform.position, targetCell.Position) < Mathf.Epsilon) {
                 transform.position = targetCell.Position;
@@ -39,5 +41,15 @@ public class GridMover : MonoBehaviour
     private void InitPosition() {
         currentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
         transform.position = currentCell.Position;
+    }
+
+    private void RotateTorwardsTarget() {
+        if (targetCell) {
+            Vector3 forward = (targetCell.Position - transform.position).normalized;
+            if (forward != Vector3.zero) {
+                Quaternion toRot = Quaternion.LookRotation(forward, transform.up);
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, toRot, rotationSpeed * Time.deltaTime);
+            }
+        }
     }
 }
