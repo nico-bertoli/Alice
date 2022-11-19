@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class Player : GridMover
 {
     /// <summary>
@@ -9,8 +10,8 @@ public class Player : GridMover
     /// </summary>
     /// <param name="_dir">direction to move torwards</param>
     public void MoveToAdjacentCell(WorldGrid.eDirections _dir) {
-        if (target == null) {
-            target = WorldGrid.Instance.GetAdjacentCell(cell, _dir);
+        if (targetCell == null) {
+            targetCell = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
         }
     }
 
@@ -23,7 +24,7 @@ public class Player : GridMover
     /// Reads movement input from input manager
     /// </summary>
     private void readMovementInput() {
-        if(target == null && InputManager.Instance.IsMoving) {
+        if(targetCell == null && InputManager.Instance.IsMoving) {
             MoveToAdjacentCell(WorldGrid.VectorToDir(InputManager.Instance.MoveDirection));
         }
     }

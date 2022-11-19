@@ -13,15 +13,22 @@ public class WorldGrid : Singleton<WorldGrid> {
     /// number of rows
     /// </summary>
     private int nRows = 0;
+    /// <summary>
+    /// matrix of cells
+    /// </summary>
     private WorldCell[,] cells;
-
+    /// <summary>
+    /// Possible grid directions (diagonal not allowed)
+    /// </summary>
     public enum eDirections { UP,RIGHT,BOTTOM,LEFT}
 
     /// <summary>
     /// Tells you if grid has been completely initialized
     /// </summary>
     public bool Initialized { get { return cells != null; } }
-
+    /// <summary>
+    /// Called after grid generation is completed
+    /// </summary>
     public Action OnGridGenerationCompleted;
     
     /// <summary>
@@ -69,6 +76,10 @@ public class WorldGrid : Singleton<WorldGrid> {
         StartCoroutine(CompleteGridGeneration());
     }
 
+    /// <summary>
+    /// Waits untill all cells have registered, and completes grid generation calling callback method
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator CompleteGridGeneration() {
         do {
             yield return null;
@@ -79,7 +90,6 @@ public class WorldGrid : Singleton<WorldGrid> {
     }
 
 //---------------------------------------- registering cells
-
 public void RegisterCell(WorldCell _cell) {
 
         if (cells == null)

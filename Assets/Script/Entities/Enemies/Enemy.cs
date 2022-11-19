@@ -6,7 +6,13 @@ public class Enemy : GridMover
 {
     [SerializeField] Transform wayPointsContainer;
     
-    private List<Transform> wayPoints;
+    /// <summary>
+    /// waypoints list
+    /// </summary>
+    private List<Transform> waypoints;
+    /// <summary>
+    /// next waypoint index
+    /// </summary>
     private int wayPointIndex = 1;
 
     protected override void Start() {
@@ -18,18 +24,24 @@ public class Enemy : GridMover
         base.Update();
     }
 
+    /// <summary>
+    /// if current waypoint was reached, sets next waypoint as target
+    /// </summary>
     private void SetupTarget() {
-        if(wayPoints != null && wayPoints.Count > 0 && target == null) {
+        if(waypoints != null && waypoints.Count > 0 && targetCell == null) {
             Debug.Log("setup target");
-            target = WorldGrid.Instance.GetCellAtPos(wayPoints[wayPointIndex++].position);
-            if (wayPointIndex == wayPoints.Count)
+            targetCell = WorldGrid.Instance.GetCellAtPos(waypoints[wayPointIndex++].position);
+            if (wayPointIndex == waypoints.Count)
                 wayPointIndex = 0;
         }
     }
 
+    /// <summary>
+    /// Initializes the object
+    /// </summary>
     private void Init() {
-        wayPoints = new List<Transform>();
+        waypoints = new List<Transform>();
         for (int i = 0; i < wayPointsContainer.childCount; i++)
-            wayPoints.Add(wayPointsContainer.GetChild(i));
+            waypoints.Add(wayPointsContainer.GetChild(i));
     }
 }

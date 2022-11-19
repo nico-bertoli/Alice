@@ -1,13 +1,14 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Object that can move on world grid
+/// </summary>
 public class GridMover : MonoBehaviour
 {
     [SerializeField] protected float speed;
 
-    protected WorldCell cell;
-    protected WorldCell target;
+    protected WorldCell currentCell;
+    protected WorldCell targetCell;
 
     protected virtual void Start() {
         WorldGrid.Instance.OnGridGenerationCompleted += InitPosition;
@@ -17,23 +18,26 @@ public class GridMover : MonoBehaviour
         MoveToTarget();
     }
 
+    /// <summary>
+    /// Moves the object torwards target cell
+    /// </summary>
     private void MoveToTarget() {
-        if (target) {
-            transform.position = Vector3.MoveTowards(transform.position, target.Position, speed * Time.deltaTime);
-            cell = WorldGrid.Instance.GetCellAtPos(transform.position);
-            if(Vector3.Distance(transform.position, target.Position) < Mathf.Epsilon) {
-                transform.position = target.Position;
-                target = null;
+        if (targetCell) {
+            transform.position = Vector3.MoveTowards(transform.position, targetCell.Position, speed * Time.deltaTime);
+            currentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
+            if(Vector3.Distance(transform.position, targetCell.Position) < Mathf.Epsilon) {
+                transform.position = targetCell.Position;
+                targetCell = null;
             }
         }
     }
 
     /// <summary>
-    /// Centers the object in its starting cell
+    /// Setup object position on starting cell
     /// </summary>
     /// <returns></returns>
     private void InitPosition() {
-        cell = WorldGrid.Instance.GetCellAtPos(transform.position);
-        transform.position = cell.Position;
+        currentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
+        transform.position = currentCell.Position;
     }
 }

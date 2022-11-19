@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Renderers gizmos lines between child objects 
+/// </summary>
 public class WayPointsPathRenderer : MonoBehaviour
 {
     private void OnDrawGizmos() {
@@ -11,7 +14,5 @@ public class WayPointsPathRenderer : MonoBehaviour
             Gizmos.DrawLine(transform.GetChild(i-1).position, transform.GetChild(i).position);
         }
         Gizmos.DrawLine(transform.GetChild(transform.childCount-1).position, transform.GetChild(0).position);
-
-
     }
 }

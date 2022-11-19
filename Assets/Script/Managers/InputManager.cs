@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// Reads input using new input system
+/// </summary>
 public class InputManager : Singleton<InputManager>
 {
     //======================================== fields
