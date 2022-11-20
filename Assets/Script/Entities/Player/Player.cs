@@ -20,13 +20,8 @@ public class Player : GridMover
         }
     }
 
-    protected override void OnCellChanged() {
-        
-    }
-
-    protected override void OnDirectionChanged() {
-
-    }
+    protected override void OnCellChanged() { }
+    protected override void OnDirectionChanged() { }
 
     protected override void Update() {
         if(CanMove)
@@ -40,7 +35,11 @@ public class Player : GridMover
     /// </summary>
     private void readMovementInput() {
         if(targetCell == null && InputManager.Instance.IsMoving) {
-            MoveToAdjacentCell(WorldGrid.VectorToDir(InputManager.Instance.MoveDirection));
+            Vector2 input = InputManager.Instance.MoveDirection;
+            MoveToAdjacentCell(WorldGrid.VectorToDir(input));
+
+            //allows rotation torwards walls
+            if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
         }
     }
 

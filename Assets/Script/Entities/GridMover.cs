@@ -11,7 +11,7 @@ public abstract class GridMover : GridObject
     public bool CanMove { get; set; } = false;
     protected WorldCell targetCell;
     private WorldCell previousCell;
-    private Vector3 previousDirection;
+    protected Vector3 previousDirection;
 
     protected virtual void Update() {
         if (CanMove) {
@@ -58,15 +58,17 @@ public abstract class GridMover : GridObject
             forward = Vector3.ProjectOnPlane(previousDirection, Vector3.up);
 
             if (forward != Vector3.zero) {
-                Quaternion toRot = Quaternion.LookRotation(forward, Vector3.up);
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, toRot, rotationSpeed * Time.deltaTime);
-
+               RotateAsVector(forward);
                 if (forward != previousDirection) {
                     previousDirection = forward;
                     OnDirectionChanged();
                 }
             }
+    }
 
+    protected void RotateAsVector(Vector3 _dir) {
+        Quaternion toRot = Quaternion.LookRotation(_dir, Vector3.up);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, toRot, rotationSpeed * Time.deltaTime);
     }
 
     protected abstract void OnDirectionChanged();
