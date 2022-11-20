@@ -56,15 +56,14 @@ public abstract class GridMover : MonoBehaviour
 
     protected void RotateTorwardsTarget() {
         Vector3 forward;
+
         if (targetCell)
             forward = (targetCell.Position - transform.position).normalized;
-        else {
+        else
             forward = Vector3.ProjectOnPlane(previousDirection, Vector3.up);
-        }
-            
 
             if (forward != Vector3.zero) {
-                Quaternion toRot = Quaternion.LookRotation(forward, transform.up);
+                Quaternion toRot = Quaternion.LookRotation(forward, Vector3.up);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, toRot, rotationSpeed * Time.deltaTime);
 
                 if (forward != previousDirection) {
