@@ -19,11 +19,16 @@ public class Enemy : GridMover
 
     protected override void Start() {
         WorldGrid.Instance.OnGridGenerationCompleted += Init;
+        GameController.Instance.RegisterEnemy(this);
     }
 
     protected override void Update() {
         SetupTarget();
         base.Update();
+
+        if (!CanMove) {
+            OnCellChanged();
+        }
     }
 
     /// <summary>

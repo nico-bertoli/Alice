@@ -7,9 +7,18 @@ public class GameController : Singleton<GameController>
     [SerializeField] private Player player;
 
     public Player Player { get { return player; } }
-    
+
+    private List<Enemy> enemies = new List<Enemy>();
+
+    public void RegisterEnemy(Enemy _enemy) {
+        enemies.Add(_enemy);
+    }
+
     public void GameOver() {
         Debug.Log("Game Over!");
-        Time.timeScale = 0f;
+        player.CanMove = false;
+        foreach (Enemy enemy in enemies)
+            enemy.CanMove = false;
+            
     }
 }

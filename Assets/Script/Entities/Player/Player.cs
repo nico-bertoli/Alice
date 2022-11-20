@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class Player : GridMover
+public class Player : GridMover 
 {
+
     /// <summary>
     /// Moves player in adjacent cell in given direction (if possible)
     /// </summary>

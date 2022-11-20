@@ -8,6 +8,7 @@ public abstract class GridMover : MonoBehaviour
     [SerializeField] protected float moveSpeed;
     [SerializeField] private float rotationSpeed;
 
+    public bool CanMove { get; set; } = true;
     public WorldCell CurrentCell { get; private set; }
     protected WorldCell targetCell;
 
@@ -19,9 +20,10 @@ public abstract class GridMover : MonoBehaviour
     }
 
     protected virtual void Update() {
-        MoveToTarget();
-        RotateTorwardsTarget();
-    }
+        if (CanMove) 
+            MoveToTarget();
+            RotateTorwardsTarget();
+        }
 
     /// <summary>
     /// Moves the object torwards target cell
