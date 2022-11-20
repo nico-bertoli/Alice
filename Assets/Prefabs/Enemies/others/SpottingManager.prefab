@@ -15,7 +15,7 @@ GameObject:
   m_Layer: 0
   m_Name: SpottingManager
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -97,3 +97,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spottingIndicatorPref: {fileID: 4706436384508792101, guid: 5c7012dab31f4674e8afd31436d1ea66, type: 3}
+  debug: 0
