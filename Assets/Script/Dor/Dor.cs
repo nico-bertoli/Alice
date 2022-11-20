@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Dor : GridObject
@@ -8,6 +9,13 @@ public class Dor : GridObject
 
     private static List<int> keysCollected = new List<int>();
 
-    public void KeyCollected(int _id) { keysCollected.Add(_id); }
+    public static void KeyCollected(int _id) { keysCollected.Add(_id); }
 
+    public void TryOpenDor() {
+        if (keysCollected.Contains(id)) {
+            keysCollected.Remove(id);
+            currentCell.CurrentObject = null;
+            Destroy(gameObject);
+        }
+    }
 }

@@ -68,8 +68,7 @@ public class WorldGrid : Singleton<WorldGrid> {
 
         if (ris != null && Mathf.Abs(ris.Height - _cell.Height) > 1) ris = null;
 
-        return ris;
-            
+        return ris;  
     }
 
     private void Start() {
