@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Dor : MonoBehaviour
+public class Dor : GridObject
 {
     [SerializeField] int id;
 
