@@ -8,7 +8,7 @@ public abstract class GridMover : MonoBehaviour
     [SerializeField] protected float moveSpeed;
     [SerializeField] private float rotationSpeed;
 
-    public bool CanMove { get; set; } = true;
+    public bool CanMove { get; set; } = false;
     public WorldCell CurrentCell { get; private set; }
     protected WorldCell targetCell;
 
@@ -52,6 +52,7 @@ public abstract class GridMover : MonoBehaviour
     private void InitPosition() {
         CurrentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
         transform.position = CurrentCell.Position;
+        CanMove = true;
     }
 
     protected void RotateTorwardsTarget() {

@@ -18,6 +18,7 @@ public class Enemy : GridMover
     private int wayPointIndex = 1;
 
     protected override void Start() {
+        base.Start();
         WorldGrid.Instance.OnGridGenerationCompleted += Init;
         GameController.Instance.RegisterEnemy(this);
     }
@@ -67,7 +68,9 @@ public class Enemy : GridMover
     }
 
     private void refreshSpottingAreas() {
-        foreach (SpottingAreaManager manager in spottingManagers)
-            manager.HardSetArea();
+        if (spottingManagers != null) {
+            foreach (SpottingAreaManager manager in spottingManagers)
+                manager.HardSetArea();
+        }
     }
 }

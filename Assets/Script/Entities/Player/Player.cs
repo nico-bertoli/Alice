@@ -25,7 +25,9 @@ public class Player : GridMover
     }
 
     protected override void Update() {
-        readMovementInput();
+        if(CanMove)
+            readMovementInput();
+
         base.Update();
     }
 

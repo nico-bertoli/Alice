@@ -6,7 +6,9 @@ public class SpottingAreaManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] GameObject spottingIndicatorPref;
-    [SerializeField] bool debug;
+    float viewSecondsForGameOver = 0.1f;
+
+    private static float? firstPlayerSeenTime = null;
 
     private SpottingIndicator spottingIndicator;
     private WorldCell cell;
@@ -29,15 +31,26 @@ public class SpottingAreaManager : MonoBehaviour
 
     private void Update() {
         cell = WorldGrid.Instance.GetCellAtPos(transform.position);
-        if (cell == player.CurrentCell && cell!=null)
-            GameController.Instance.GameOver();
+        handlePlayerVision();
     }
 
     public void HardSetArea() {
         spottingIndicator.HardSet(WorldGrid.Instance.GetCellAtPos(transform.position));
-        if (debug) {
-            Debug.Log("hard set called with: position: " + transform.position + ", cell returned: " + WorldGrid.Instance.GetCellAtPos(transform.position));
+    }
+
+    private void handlePlayerVision() {
+        if (cell == player.CurrentCell && cell != null) {
+            if (firstPlayerSeenTime != null && Time.time - firstPlayerSeenTime >= viewSecondsForGameOver)
+                GameController.Instance.GameOver();
+            else if (firstPlayerSeenTime == null)
+                firstPlayerSeenTime = Time.time;
         }
+        else {
+            if (Time.time - firstPlayerSeenTime > viewSecondsForGameOver+0.1f)
+                firstPlayerSeenTime = null;
+        }
+
+            
     }
 
     //public void TraslateArea() {
