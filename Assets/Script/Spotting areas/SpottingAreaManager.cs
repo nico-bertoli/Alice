@@ -6,6 +6,8 @@ public class SpottingAreaManager : MonoBehaviour
 {
     [Header("References")]
     [SerializeField] GameObject spottingIndicatorPref;
+    [SerializeField] bool debug;
+
     float viewSecondsForGameOver = 0.1f;
 
     private static float? firstPlayerSeenTime = null;
