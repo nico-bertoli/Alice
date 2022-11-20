@@ -24,11 +24,13 @@ public class Enemy : GridMover
 
     protected override void Update() {
         SetupTarget();
-        base.Update();
 
-        if (!CanMove) {
-            OnCellChanged();
-        }
+        if(CanMove)
+            MoveToTarget();
+        else
+            refreshSpottingAreas();
+
+        RotateTorwardsTarget();
     }
 
     /// <summary>
@@ -57,11 +59,14 @@ public class Enemy : GridMover
     }
 
     protected override void OnDirectionChanged() {
-        foreach (SpottingAreaManager manager in spottingManagers)
-            manager.HardSetArea();
+        refreshSpottingAreas();
     }
 
     protected override void OnCellChanged() {
+        refreshSpottingAreas();
+    }
+
+    private void refreshSpottingAreas() {
         foreach (SpottingAreaManager manager in spottingManagers)
             manager.HardSetArea();
     }

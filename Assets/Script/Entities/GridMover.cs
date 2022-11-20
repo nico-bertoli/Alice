@@ -20,15 +20,17 @@ public abstract class GridMover : MonoBehaviour
     }
 
     protected virtual void Update() {
-        if (CanMove) 
+        if (CanMove) {
             MoveToTarget();
             RotateTorwardsTarget();
+        }
+           
         }
 
     /// <summary>
     /// Moves the object torwards target cell
     /// </summary>
-    private void MoveToTarget() {
+    protected void MoveToTarget() {
         if (targetCell) {
             transform.position = Vector3.MoveTowards(transform.position, targetCell.Position, moveSpeed * Time.deltaTime);
             CurrentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
@@ -52,7 +54,7 @@ public abstract class GridMover : MonoBehaviour
         transform.position = CurrentCell.Position;
     }
 
-    private void RotateTorwardsTarget() {
+    protected void RotateTorwardsTarget() {
         if (targetCell) {
             Vector3 forward = (targetCell.Position - transform.position).normalized;
             if (forward != Vector3.zero) {

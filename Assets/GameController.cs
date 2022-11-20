@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameController : Singleton<GameController>
 {
@@ -15,10 +16,15 @@ public class GameController : Singleton<GameController>
     }
 
     public void GameOver() {
-        Debug.Log("Game Over!");
         player.CanMove = false;
         foreach (Enemy enemy in enemies)
             enemy.CanMove = false;
+
+        StartCoroutine(resetScene());
             
+    }
+    private IEnumerator resetScene() {
+        yield return new WaitForSeconds(2f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 }
