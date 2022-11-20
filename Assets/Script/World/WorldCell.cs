@@ -38,4 +38,8 @@ public class WorldCell : MonoBehaviour
         WorldGrid.Instance.RegisterCell(this);
         Debug.Log("registered cells: " + numCells);
     }
+
+    public override string ToString() {
+        return ("[" + M + "," + N + "]");
+    }
 }

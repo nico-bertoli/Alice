@@ -5,23 +5,33 @@ using UnityEngine;
 public class Enemy : GridMover
 {
     [SerializeField] Transform wayPointsContainer;
+    [SerializeField] Transform SpottingManagersContainer;
     
     /// <summary>
     /// waypoints list
     /// </summary>
     private List<Transform> waypoints;
+    private List<SpottingAreaManager> spottingManagers;
     /// <summary>
     /// next waypoint index
     /// </summary>
     private int wayPointIndex = 1;
 
     protected override void Start() {
+        base.Start();
         WorldGrid.Instance.OnGridGenerationCompleted += Init;
+        GameController.Instance.RegisterEnemy(this);
     }
 
     protected override void Update() {
         SetupTarget();
-        base.Update();
+
+        if(CanMove)
+            MoveToTarget();
+        else
+            refreshSpottingAreas();
+
+        RotateTorwardsTarget();
     }
 
     /// <summary>
@@ -43,5 +53,24 @@ public class Enemy : GridMover
         waypoints = new List<Transform>();
         for (int i = 0; i < wayPointsContainer.childCount; i++)
             waypoints.Add(wayPointsContainer.GetChild(i));
+
+        spottingManagers = new List<SpottingAreaManager>();
+        for (int i = 0; i < SpottingManagersContainer.childCount; i++)
+            spottingManagers.Add(SpottingManagersContainer.GetChild(i).GetComponent<SpottingAreaManager>());
+    }
+
+    protected override void OnDirectionChanged() {
+        refreshSpottingAreas();
+    }
+
+    protected override void OnCellChanged() {
+        refreshSpottingAreas();
+    }
+
+    private void refreshSpottingAreas() {
+        if (spottingManagers != null) {
+            foreach (SpottingAreaManager manager in spottingManagers)
+                manager.HardSetArea();
+        }
     }
 }
