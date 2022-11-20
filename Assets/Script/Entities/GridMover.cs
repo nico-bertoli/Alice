@@ -30,13 +30,13 @@ public abstract class GridMover : MonoBehaviour
         if (targetCell) {
             transform.position = Vector3.MoveTowards(transform.position, targetCell.Position, moveSpeed * Time.deltaTime);
             CurrentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
-            if(previousCell != CurrentCell) {
-                OnCellChanged();
-                previousCell = CurrentCell;
-            }
             if(Vector3.Distance(transform.position, targetCell.Position) < Mathf.Epsilon) {
                 transform.position = targetCell.Position;
                 targetCell = null;
+            }
+            if (previousCell != CurrentCell) {
+                previousCell = CurrentCell;
+                OnCellChanged();
             }
         }
     }
@@ -54,14 +54,13 @@ public abstract class GridMover : MonoBehaviour
         if (targetCell) {
             Vector3 forward = (targetCell.Position - transform.position).normalized;
             if (forward != Vector3.zero) {
-
-                if(forward != previousForward) {
-                    OnDirectionChanged();
-                    previousForward = forward;
-                }
-
                 Quaternion toRot = Quaternion.LookRotation(forward, transform.up);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, toRot, rotationSpeed * Time.deltaTime);
+
+                if (forward != previousForward) {
+                    previousForward = forward;
+                    OnDirectionChanged();
+                }
             }
         }
     }

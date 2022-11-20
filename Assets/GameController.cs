@@ -10,5 +10,6 @@ public class GameController : Singleton<GameController>
     
     public void GameOver() {
         Debug.Log("Game Over!");
+        Time.timeScale = 0f;
     }
 }

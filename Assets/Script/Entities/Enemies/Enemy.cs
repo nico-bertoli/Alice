@@ -53,7 +53,7 @@ public class Enemy : GridMover
 
     protected override void OnDirectionChanged() {
         foreach (SpottingAreaManager manager in spottingManagers)
-            manager.TraslateArea();
+            manager.HardSetArea();
     }
 
     protected override void OnCellChanged() {
