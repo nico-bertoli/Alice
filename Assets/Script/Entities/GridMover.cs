@@ -3,21 +3,15 @@ using UnityEngine;
 /// <summary>
 /// Object that can move on world grid
 /// </summary>
-public abstract class GridMover : MonoBehaviour
+public abstract class GridMover : GridObject
 {
     [SerializeField] protected float moveSpeed;
     [SerializeField] private float rotationSpeed;
 
     public bool CanMove { get; set; } = false;
-    public WorldCell CurrentCell { get; private set; }
     protected WorldCell targetCell;
-
     private WorldCell previousCell;
     private Vector3 previousDirection;
-
-    protected virtual void Start() {
-        WorldGrid.Instance.OnGridGenerationCompleted += InitPosition;
-    }
 
     protected virtual void Update() {
         if (CanMove) {
@@ -32,13 +26,15 @@ public abstract class GridMover : MonoBehaviour
     protected void MoveToTarget() {
         if (targetCell) {
             transform.position = Vector3.MoveTowards(transform.position, targetCell.Position, moveSpeed * Time.deltaTime);
-            CurrentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
+            currentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
             if(Vector3.Distance(transform.position, targetCell.Position) < Mathf.Epsilon) {
                 transform.position = targetCell.Position;
                 targetCell = null;
             }
             if (previousCell != CurrentCell) {
+                if(previousCell)previousCell.Walkable = true;
                 previousCell = CurrentCell;
+                CurrentCell.Walkable = false;
                 OnCellChanged();
             }
         }
@@ -48,9 +44,8 @@ public abstract class GridMover : MonoBehaviour
     /// Setup object position on starting cell
     /// </summary>
     /// <returns></returns>
-    private void InitPosition() {
-        CurrentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
-        transform.position = CurrentCell.Position;
+    protected override void Init() {
+        base.Init();
         CanMove = true;
     }
 

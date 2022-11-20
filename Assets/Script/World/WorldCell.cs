@@ -14,6 +14,7 @@ public class WorldCell : MonoBehaviour
     //object
     public int N { get { return (int)transform.position.z; } }
     public int M { get { return (int)transform.position.x; } }
+    public bool Walkable { get; set; } = true;
 
     public int Height { get {
             return (int)transform.position.y;

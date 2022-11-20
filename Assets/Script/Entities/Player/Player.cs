@@ -13,6 +13,7 @@ public class Player : GridMover
     public void MoveToAdjacentCell(WorldGrid.eDirections _dir) {
         if (targetCell == null) {
             targetCell = WorldGrid.Instance.GetAdjacentCell(CurrentCell, _dir);
+            if (!targetCell.Walkable) targetCell = null;
         }
     }
 
