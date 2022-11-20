@@ -13,7 +13,7 @@ public abstract class GridMover : MonoBehaviour
     protected WorldCell targetCell;
 
     private WorldCell previousCell;
-    private Vector3 previousForward;
+    private Vector3 previousDirection;
 
     protected virtual void Start() {
         WorldGrid.Instance.OnGridGenerationCompleted += InitPosition;
@@ -24,8 +24,7 @@ public abstract class GridMover : MonoBehaviour
             MoveToTarget();
             RotateTorwardsTarget();
         }
-           
-        }
+    }
 
     /// <summary>
     /// Moves the object torwards target cell
@@ -56,18 +55,22 @@ public abstract class GridMover : MonoBehaviour
     }
 
     protected void RotateTorwardsTarget() {
-        if (targetCell) {
-            Vector3 forward = (targetCell.Position - transform.position).normalized;
+        Vector3 forward;
+        if (targetCell)
+            forward = (targetCell.Position - transform.position).normalized;
+        else
+            forward = previousDirection;
+
             if (forward != Vector3.zero) {
                 Quaternion toRot = Quaternion.LookRotation(forward, transform.up);
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, toRot, rotationSpeed * Time.deltaTime);
 
-                if (forward != previousForward) {
-                    previousForward = forward;
+                if (forward != previousDirection) {
+                    previousDirection = forward;
                     OnDirectionChanged();
                 }
             }
-        }
+
     }
 
     protected abstract void OnDirectionChanged();
