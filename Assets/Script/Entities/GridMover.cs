@@ -32,9 +32,9 @@ public abstract class GridMover : GridObject
                 targetCell = null;
             }
             if (previousCell != CurrentCell) {
-                if(previousCell)previousCell.Walkable = true;
+                if(previousCell)previousCell.CurrentObject = null;
                 previousCell = CurrentCell;
-                CurrentCell.Walkable = false;
+                CurrentCell.CurrentObject = gameObject;
                 OnCellChanged();
             }
         }

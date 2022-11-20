@@ -19,7 +19,7 @@ public class GridObject : MonoBehaviour
     protected virtual void Init() {
         currentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
         transform.position = CurrentCell.Position;
-        CurrentCell.Walkable = false;
+        CurrentCell.CurrentObject = gameObject;
     }
 
 }
