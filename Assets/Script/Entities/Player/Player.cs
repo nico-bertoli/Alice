@@ -5,6 +5,15 @@ using UnityEngine;
 
 public class Player : GridMover 
 {
+    [SerializeField] float rewindSeconds = 5f;
+    [SerializeField] float rewindCoolDown = 5f;
+
+    RewindManager rewindManager;
+    private float lastTimeAbilityUsed;
+
+    private void Awake() {
+        rewindManager = new RewindManager(rewindSeconds);
+    }
 
     /// <summary>
     /// Moves player in adjacent cell in given direction (if possible)
@@ -24,18 +33,20 @@ public class Player : GridMover
                 if (targetObj == null)
                     targetCell = WorldGrid.Instance.GetAdjacentCell(CurrentCell, _dir);
             }
-
-            
         }
     }
 
-    protected override void OnCellChanged() { }
+    protected override void OnCellChanged() {
+        rewindManager.RegisterFrame(CurrentCell);
+    }
+
     protected override void OnDirectionChanged() { }
 
     protected override void Update() {
-        if(CanMove)
+        if (CanMove) {
             readMovementInput();
-
+            readRewindInput();
+        }
         base.Update();
     }
 
@@ -49,6 +60,20 @@ public class Player : GridMover
 
             //allows rotation torwards walls
             if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
+        }
+    }
+
+    private void readRewindInput() {
+        if(InputManager.Instance.IsUsingAbility && Time.time - lastTimeAbilityUsed >= rewindCoolDown) {
+            Debug.Log("Ability used");
+            lastTimeAbilityUsed = Time.time;
+            
+            currentCell.CurrentObject = null;
+            currentCell = rewindManager.Rewind();
+            if (currentCell.CurrentObject == null)
+                currentCell.CurrentObject = gameObject;
+            transform.position = currentCell.Position;
+            
         }
     }
 

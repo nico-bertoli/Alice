@@ -12,6 +12,8 @@ public class InputManager : Singleton<InputManager>
     public Vector2 MoveDirection { get; private set; }
     public bool IsMoving { get; set; }
 
+    public bool IsUsingAbility { get; set; }    
+
     //======================================== methods
     public void Move(InputAction.CallbackContext context) {
         if (context.performed) {
@@ -21,5 +23,12 @@ public class InputManager : Singleton<InputManager>
         else if (context.canceled) {
             IsMoving = false;
         }
+    }
+
+    public void Ability(InputAction.CallbackContext context) {
+        if (context.performed)
+            IsUsingAbility = true;
+        else if (context.canceled)
+            IsUsingAbility = false;
     }
 }

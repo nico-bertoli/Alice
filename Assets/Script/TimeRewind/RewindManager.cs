@@ -12,7 +12,7 @@ public class RewindManager {
 
     public void RegisterFrame(WorldCell _cell) {
         TimeFrame newFrame = new TimeFrame(_cell,Time.time);
-        frames[frames.Count - 1].EndTime = Time.time;
+        if(frames.Count -1 >=0) frames[frames.Count - 1].EndTime = Time.time;
         frames.Add(newFrame);
         RemoveTooOldFrames();
     }
