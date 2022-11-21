@@ -1995,7 +1995,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5218754314862781851, guid: 0a475084ec4bc37409d18ff630cb35cb, type: 3}
       propertyPath: m_Name
-      value: Dor
+      value: Door
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a475084ec4bc37409d18ff630cb35cb, type: 3}

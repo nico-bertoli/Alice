@@ -8,7 +8,7 @@ public class Key : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if(other.gameObject.tag == "Player") {
-            Dor.KeyCollected(id);
+            Door.KeyCollected(id);
             Destroy(gameObject);
         }
     }

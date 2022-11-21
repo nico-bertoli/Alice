@@ -19,7 +19,7 @@ public class Player : GridMover
                 GameObject targetObj = target.CurrentObject;
 
                 if (targetObj != null && targetObj.tag == "Dor")
-                    targetObj.GetComponent<Dor>().TryOpenDor();
+                    targetObj.GetComponent<Door>().TryOpenDor();
 
                 if (targetObj == null)
                     targetCell = WorldGrid.Instance.GetAdjacentCell(CurrentCell, _dir);
