@@ -17,9 +17,12 @@ public class RewindManager {
         RemoveTooOldFrames();
     }
 
-    public WorldCell Rewind() {
+    public List<TimeFrame> Rewind() {
         RemoveTooOldFrames();
-        return frames[0].Cell;
+        //return frames[0].Cell;
+        //if (frames.Count - 1 >= 0) frames[frames.Count - 1].EndTime = Time.time;
+        foreach (TimeFrame frame in frames) if (frame.EndTime == null) frame.EndTime = Time.time;
+        return frames;
     }
     
     /// <summary>
@@ -56,19 +59,18 @@ public class RewindManager {
     public void DebugList() {
         string ris = "";
         for(int i = 0;i<frames.Count;i++)
-            ris += frames[i].Cell + " start: " + frames[i].StratTIme + "end: " + frames[i].EndTime+'\n';
+            ris += frames[i].Cell + " start: " + frames[i].StratTime + "end: " + frames[i].EndTime+'\n';
         Debug.Log(ris);
-    }
-
-    private class TimeFrame {
-        public WorldCell Cell { get; set; }
-        public float StratTIme { get; set; }
-        public float? EndTime { get; set; }
-
-        public TimeFrame(WorldCell _cell, float _startTime) {
-            Cell = _cell;
-            StratTIme = _startTime;
-        }
     }
 }
 
+public class TimeFrame {
+    public WorldCell Cell { get; set; }
+    public float StratTime { get; set; }
+    public float? EndTime { get; set; }
+
+    public TimeFrame(WorldCell _cell, float _startTime) {
+        Cell = _cell;
+        StratTime = _startTime;
+    }
+}

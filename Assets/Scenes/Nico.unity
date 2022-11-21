@@ -1288,7 +1288,8 @@ MonoBehaviour:
   moveSpeed: 5
   rotationSpeed: 800
   rewindSeconds: 5
-  rewindCoolDown: 0
+  rewindCoolDown: 5
+  rewindAnimationSpeed: 4
 --- !u!114 &1454039003
 MonoBehaviour:
   m_ObjectHideFlags: 0

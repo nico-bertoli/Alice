@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Timeline;
 using UnityEngine;
 
 
@@ -7,9 +8,13 @@ public class Player : GridMover
 {
     [SerializeField] float rewindSeconds = 5f;
     [SerializeField] float rewindCoolDown = 5f;
+    [SerializeField] float rewindAnimationSpeed = 4f;
+
+    public bool IsVisible { get; private set; } = true;
 
     RewindManager rewindManager;
     private float lastTimeAbilityUsed;
+    private bool isRewindActivated = false;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
@@ -38,17 +43,21 @@ public class Player : GridMover
 
     protected override void OnCellChanged() {
         rewindManager.RegisterFrame(CurrentCell);
-        rewindManager.DebugList();
     }
 
     protected override void OnDirectionChanged() { }
 
     protected override void Update() {
-        if (CanMove) {
+
+        if (isRewindActivated) {
+            RotateAwayFromTarget();
+        }
+        else if (CanMove) {
             handleMovementInput();
             handleRewindInput();
+            RotateTorwardsTarget();
         }
-        base.Update();
+        MoveToTarget();
     }
 
     /// <summary>
@@ -70,23 +79,42 @@ public class Player : GridMover
     private void handleRewindInput() {
         if(InputManager.Instance.IsUsingAbility && Time.time - lastTimeAbilityUsed >= rewindCoolDown) {
             lastTimeAbilityUsed = Time.time;
-            
-            currentCell.CurrentObject = null;
-            currentCell = rewindManager.Rewind();
-            Debug.Log("Ability used, returning to cell: " + currentCell) ;
-            if (currentCell.CurrentObject == null)
-                currentCell.CurrentObject = gameObject;
-            transform.position = currentCell.Position;
-            targetCell = null;
+
+            rewindManager.DebugList();
+
+            //currentCell.CurrentObject = null;
+            //currentCell = rewindManager.Rewind();
+            //Debug.Log("Ability used, returning to cell: " + currentCell) ;
+            //if (currentCell.CurrentObject == null)
+            //    currentCell.CurrentObject = gameObject;
+            //transform.position = currentCell.Position;
+            //targetCell = null;
+
+            StartCoroutine(rewind(rewindManager.Rewind()));
             
         }
+    }
+    
+    private IEnumerator rewind(List<TimeFrame> _frames) {
+        IsVisible = false;
+        isRewindActivated = true;
+
+        float originalMoveSpeed = moveSpeed;
+        moveSpeed *= rewindAnimationSpeed;
+        for(int i = _frames.Count-1; i> 0; i--) {
+            targetCell = _frames[i].Cell;
+            yield return new WaitForSeconds(((float)_frames[i].EndTime - _frames[i].StratTime)/rewindAnimationSpeed);
+        }
+        moveSpeed = originalMoveSpeed;
+
+        isRewindActivated=false;
+        IsVisible = true;
     }
 
     protected override void Init() {
         base.Init();
         rewindManager.RegisterFrame(currentCell);
     }
-
 
 
 }

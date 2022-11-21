@@ -41,7 +41,7 @@ public class SpottingAreaManager : MonoBehaviour
     }
 
     private void handlePlayerVision() {
-        if (cell == player.CurrentCell && cell != null) {
+        if (cell == player.CurrentCell && cell != null && player.IsVisible) {
             if (firstPlayerSeenTime != null && Time.time - firstPlayerSeenTime >= viewSecondsForGameOver)
                 GameController.Instance.GameOver();
             else if (firstPlayerSeenTime == null)
