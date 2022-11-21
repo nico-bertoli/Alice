@@ -10,14 +10,20 @@ public class Player : GridMover
     [SerializeField] float rewindCoolDown = 5f;
     [SerializeField] float rewindAnimationSpeed = 4f;
 
+    [SerializeField] Material normalMaterial;
+    [SerializeField] Material invisibilityMaterial;
+
+
     public bool IsVisible { get; private set; } = true;
 
-    RewindManager rewindManager;
+    private RewindManager rewindManager;
     private float lastTimeAbilityUsed;
     private bool isRewindActivated = false;
+    private MeshRenderer meshRenderer;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
+        meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
     }
 
     /// <summary>
@@ -82,16 +88,7 @@ public class Player : GridMover
 
             rewindManager.DebugList();
 
-            //currentCell.CurrentObject = null;
-            //currentCell = rewindManager.Rewind();
-            //Debug.Log("Ability used, returning to cell: " + currentCell) ;
-            //if (currentCell.CurrentObject == null)
-            //    currentCell.CurrentObject = gameObject;
-            //transform.position = currentCell.Position;
-            //targetCell = null;
-
             StartCoroutine(rewind(rewindManager.Rewind()));
-            
         }
     }
     
@@ -114,6 +111,19 @@ public class Player : GridMover
     protected override void Init() {
         base.Init();
         rewindManager.RegisterFrame(currentCell);
+    }
+
+
+    public void ActivateInvisibility(float _duration) {
+        StartCoroutine(ActivateInvisibilityCor(_duration));
+    }
+    private IEnumerator ActivateInvisibilityCor(float _duation) {
+        Debug.Log("invisible");
+        IsVisible = false;
+        meshRenderer.material = invisibilityMaterial;
+        yield return new WaitForSeconds(_duation);
+        meshRenderer.material = normalMaterial;
+        IsVisible = true;
     }
 
 

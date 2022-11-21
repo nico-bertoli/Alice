@@ -381,7 +381,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 2
-  rotationSpeed: 400
+  rotationSpeed: 800
   wayPointsContainer: {fileID: 4916720023477002170}
   SpottingManagersContainer: {fileID: 2012163067}
 --- !u!1001 &799415060212025405
@@ -1061,7 +1061,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5702583027784326457, guid: 3639ffa7fdc87cd42aff1d444419090c, type: 3}
       propertyPath: debug
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3639ffa7fdc87cd42aff1d444419090c, type: 3}
