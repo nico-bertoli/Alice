@@ -66,6 +66,23 @@ public abstract class GridMover : GridObject
             }
     }
 
+    protected void RotateAwayFromTarget() {
+        Vector3 forward;
+
+        if (targetCell)
+            forward = (transform.position - targetCell.Position).normalized;
+        else
+            forward = Vector3.ProjectOnPlane(previousDirection, Vector3.up);
+
+        if (forward != Vector3.zero) {
+            RotateAsVector(forward);
+            if (forward != previousDirection) {
+                previousDirection = forward;
+                OnDirectionChanged();
+            }
+        }
+    }
+
     protected void RotateAsVector(Vector3 _dir) {
         Quaternion toRot = Quaternion.LookRotation(_dir, Vector3.up);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, toRot, rotationSpeed * Time.deltaTime);
