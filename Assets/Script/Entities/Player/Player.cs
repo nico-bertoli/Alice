@@ -38,14 +38,15 @@ public class Player : GridMover
 
     protected override void OnCellChanged() {
         rewindManager.RegisterFrame(CurrentCell);
+        rewindManager.DebugList();
     }
 
     protected override void OnDirectionChanged() { }
 
     protected override void Update() {
         if (CanMove) {
-            readMovementInput();
-            readRewindInput();
+            handleMovementInput();
+            handleRewindInput();
         }
         base.Update();
     }
@@ -53,7 +54,7 @@ public class Player : GridMover
     /// <summary>
     /// Reads movement input from input manager
     /// </summary>
-    private void readMovementInput() {
+    private void handleMovementInput() {
         if(targetCell == null && InputManager.Instance.IsMoving) {
             Vector2 input = InputManager.Instance.MoveDirection;
             MoveToAdjacentCell(WorldGrid.VectorToDir(input));
@@ -63,18 +64,27 @@ public class Player : GridMover
         }
     }
 
-    private void readRewindInput() {
+    /// <summary>
+    /// Reads rewind input and handles it
+    /// </summary>
+    private void handleRewindInput() {
         if(InputManager.Instance.IsUsingAbility && Time.time - lastTimeAbilityUsed >= rewindCoolDown) {
-            Debug.Log("Ability used");
             lastTimeAbilityUsed = Time.time;
             
             currentCell.CurrentObject = null;
             currentCell = rewindManager.Rewind();
+            Debug.Log("Ability used, returning to cell: " + currentCell) ;
             if (currentCell.CurrentObject == null)
                 currentCell.CurrentObject = gameObject;
             transform.position = currentCell.Position;
+            targetCell = null;
             
         }
+    }
+
+    protected override void Init() {
+        base.Init();
+        rewindManager.RegisterFrame(currentCell);
     }
 
 

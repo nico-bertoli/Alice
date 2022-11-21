@@ -19,42 +19,45 @@ public class RewindManager {
 
     public WorldCell Rewind() {
         RemoveTooOldFrames();
-        return frames[frames.Count - 1].Cell;
+        return frames[0].Cell;
     }
     
     /// <summary>
     /// Removes all the frames with times too old to be rewinded
     /// </summary>
     private void RemoveTooOldFrames() {
-        int? startCleaningIndex = FindFirstTooOldIndex();
-        removeAllFramesSinceIndex(startCleaningIndex);
+        int tooOldFramesNum = CountTooOldFrames();
+        removeFramesFromOlder(tooOldFramesNum);
     }
 
     /// <summary>
     /// Finds the first index with time too old to be rewinded
     /// </summary>
     /// <returns></returns>
-    private int? FindFirstTooOldIndex() {
-        int? startCleaningIndex = null;
+    private int CountTooOldFrames() {
+        int tooOldFrames = 0;
         for (int i = 0; i < frames.Count; i++) {
             if (frames[i].EndTime != null && Time.time - frames[i].EndTime > rewindTime) {
-                startCleaningIndex = i;
-                break;
+                tooOldFrames++;
             }
+            else break;
         }
-        return startCleaningIndex;
+        return tooOldFrames;
     }
 
     /// <summary>
     /// Removes all frames starting from given index, if the index isn't null
     /// </summary>
     /// <param name="_index"></param>
-    private void removeAllFramesSinceIndex(int? _index) {
-        if (_index != null) {
-            for (int i = frames.Count; i >= _index; i--) {
-                frames.RemoveAt(i);
-            }
-        }
+    private void removeFramesFromOlder(int _num) {
+            for(int i = 0; i < _num; i++)
+                frames.RemoveAt(0);
+    }
+    public void DebugList() {
+        string ris = "";
+        for(int i = 0;i<frames.Count;i++)
+            ris += frames[i].Cell + " start: " + frames[i].StratTIme + "end: " + frames[i].EndTime+'\n';
+        Debug.Log(ris);
     }
 
     private class TimeFrame {
