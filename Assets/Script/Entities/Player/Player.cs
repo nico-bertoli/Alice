@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEditor.Timeline;
 using UnityEngine;
 
-
 public class Player : GridMover 
 {
     [SerializeField] float rewindSeconds = 5f;
@@ -12,6 +11,9 @@ public class Player : GridMover
 
     [SerializeField] Material normalMaterial;
     [SerializeField] Material invisibilityMaterial;
+
+    [SerializeField] GameObject normalModel;
+    [SerializeField] GameObject rewindModel;
 
 
     public bool IsVisible { get; private set; } = true;
@@ -93,8 +95,7 @@ public class Player : GridMover
     }
     
     private IEnumerator rewind(List<TimeFrame> _frames) {
-        IsVisible = false;
-        isRewindActivated = true;
+        setRewindActive(true);
 
         float originalMoveSpeed = moveSpeed;
         moveSpeed *= rewindAnimationSpeed;
@@ -104,8 +105,7 @@ public class Player : GridMover
         }
         moveSpeed = originalMoveSpeed;
 
-        isRewindActivated=false;
-        IsVisible = true;
+        setRewindActive(false);
     }
 
     protected override void Init() {
@@ -117,6 +117,7 @@ public class Player : GridMover
     public void ActivateInvisibility(float _duration) {
         StartCoroutine(ActivateInvisibilityCor(_duration));
     }
+
     private IEnumerator ActivateInvisibilityCor(float _duation) {
         Debug.Log("invisible");
         IsVisible = false;
@@ -124,6 +125,13 @@ public class Player : GridMover
         yield return new WaitForSeconds(_duation);
         meshRenderer.material = normalMaterial;
         IsVisible = true;
+    }
+
+    private void setRewindActive(bool _enable) {
+        IsVisible = !_enable;
+        isRewindActivated = _enable;
+        rewindModel.SetActive(_enable);
+        normalModel.SetActive(!_enable);
     }
 
 
