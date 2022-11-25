@@ -24,6 +24,7 @@ public class Player : GridMover
     private bool isRewindActivated = false;
     private MeshRenderer meshRenderer;
     private IPlayerState playerState;
+    public eDisguises Disguise = eDisguises.NO_DISGUISE;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
@@ -31,7 +32,8 @@ public class Player : GridMover
         playerState = new PlayerDefaultState();
     }
 
-    public void Disguise(eDisguises _disguise) {
+    public void SetDisguise(eDisguises _disguise) {
+        Disguise = _disguise;
         switch (_disguise) {
             case eDisguises.NO_DISGUISE:
             case eDisguises.TOWER:
@@ -68,7 +70,7 @@ public class Player : GridMover
     }
 
     private void handleDressDrop() {
-        if (InputManager.Instance.IsDroppingDress && playerState.GetType() != typeof(PlayerDefaultState)) {
+        if (InputManager.Instance.IsDroppingDress && Disguise != eDisguises.NO_DISGUISE) {
                 playerState = new PlayerDefaultState();
             Debug.Log("Dress dropped");
         }

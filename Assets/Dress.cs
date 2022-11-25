@@ -8,7 +8,7 @@ public class Dress : MonoBehaviour
 
     private void OnTriggerEnter(Collider other) {
         if(other.gameObject.tag == "Player") {
-            other.gameObject.GetComponent<Player>().Disguise(disguiseType);
+            other.gameObject.GetComponent<Player>().SetDisguise(disguiseType);
             Destroy(gameObject);
         }
     }
