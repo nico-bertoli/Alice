@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Timeline;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
 
 public class Player : GridMover 
@@ -15,6 +16,7 @@ public class Player : GridMover
     [SerializeField] GameObject normalModel;
     [SerializeField] GameObject rewindModel;
 
+    public enum eDisguises {NO_DISGUISE,PAWN,TOWER,BISHOP}
     public bool IsVisible { get; private set; } = true;
 
     private RewindManager rewindManager;
@@ -26,7 +28,22 @@ public class Player : GridMover
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
         meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
-        playerState = new DefaultPlayerState();
+        playerState = new PlayerDefaultState();
+    }
+
+    public void Disguise(eDisguises _disguise) {
+        switch (_disguise) {
+            case eDisguises.NO_DISGUISE:
+            case eDisguises.TOWER:
+                playerState = new PlayerDefaultState();
+                break;
+            case eDisguises.PAWN:
+                playerState = new PlayerPawnState(new Vector2(transform.forward.z, transform.forward.x));
+                break;
+            case eDisguises.BISHOP:
+                playerState = new PlayerBishopState();
+                break;
+        }
     }
 
     protected override void OnCellChanged() {
@@ -47,6 +64,25 @@ public class Player : GridMover
         }
         MoveToTarget();
     }
+    
+    private void move(Vector2 _dir) {
+        if (targetCell == null) {
+
+            Debug.Log(_dir);
+
+            WorldCell target = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
+            if (target != null) {
+
+                GameObject targetObj = target.CurrentObject;
+
+                if (targetObj != null && targetObj.tag == "Dor")
+                    targetObj.GetComponent<Door>().TryOpenDor();
+
+                if (targetObj == null)
+                    targetCell = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
+            }
+        }
+    }
 
     /// <summary>
     /// Reads movement input from input manager
@@ -54,8 +90,8 @@ public class Player : GridMover
     private void handleMovementInput() {
         if(targetCell == null && InputManager.Instance.IsMoving) {
             Vector2 input = InputManager.Instance.MoveDirection;
-            playerState.Move(ref targetCell,ref currentCell,ref input);
-
+            playerState.FilterInput(ref input);
+            move(input);
             //allows rotation torwards walls
             if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
         }
