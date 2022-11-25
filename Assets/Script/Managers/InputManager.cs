@@ -14,8 +14,6 @@ public class InputManager : Singleton<InputManager>
 
     public bool IsUsingAbility { get; set; }    
 
-    public bool IsDroppingDress { get; set; }   
-
     //======================================== methods
     public void Move(InputAction.CallbackContext context) {
         if (context.performed) {
@@ -32,12 +30,5 @@ public class InputManager : Singleton<InputManager>
             IsUsingAbility = true;
         else if (context.canceled)
             IsUsingAbility = false;
-    }
-
-    public void DropDress(InputAction.CallbackContext context) {
-        if (context.performed)
-            IsDroppingDress = true;
-        else if (context.canceled)
-            IsDroppingDress = false;
     }
 }
