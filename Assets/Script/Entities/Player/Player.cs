@@ -15,13 +15,13 @@ public class Player : GridMover
     [SerializeField] GameObject normalModel;
     [SerializeField] GameObject rewindModel;
 
-
     public bool IsVisible { get; private set; } = true;
 
     private RewindManager rewindManager;
     private float lastTimeAbilityUsed;
     private bool isRewindActivated = false;
     private MeshRenderer meshRenderer;
+    private IPlayerState playerState;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);

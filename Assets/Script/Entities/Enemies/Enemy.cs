@@ -49,7 +49,8 @@ public class Enemy : GridMover
     /// <summary>
     /// Initializes the object
     /// </summary>
-    private void Init() {
+    protected override void Init() {
+        base.Init();
         waypoints = new List<Transform>();
         for (int i = 0; i < wayPointsContainer.childCount; i++)
             waypoints.Add(wayPointsContainer.GetChild(i));
