@@ -28,27 +28,6 @@ public class Player : GridMover
         meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
     }
 
-    /// <summary>
-    /// Moves player in adjacent cell in given direction (if possible)
-    /// </summary>
-    /// <param name="_dir">direction to move torwards</param>
-    public void MoveToAdjacentCell(WorldGrid.eDirections _dir) {
-        if (targetCell == null) {
-
-            WorldCell target = WorldGrid.Instance.GetAdjacentCell(CurrentCell, _dir);
-            if (target != null) {
-
-                GameObject targetObj = target.CurrentObject;
-
-                if (targetObj != null && targetObj.tag == "Dor")
-                    targetObj.GetComponent<Door>().TryOpenDor();
-
-                if (targetObj == null)
-                    targetCell = WorldGrid.Instance.GetAdjacentCell(CurrentCell, _dir);
-            }
-        }
-    }
-
     protected override void OnCellChanged() {
         rewindManager.RegisterFrame(CurrentCell);
     }
@@ -74,7 +53,7 @@ public class Player : GridMover
     private void handleMovementInput() {
         if(targetCell == null && InputManager.Instance.IsMoving) {
             Vector2 input = InputManager.Instance.MoveDirection;
-            MoveToAdjacentCell(WorldGrid.VectorToDir(input));
+            playerState.Move(targetCell,CurrentCell);
 
             //allows rotation torwards walls
             if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
@@ -133,6 +112,5 @@ public class Player : GridMover
         rewindModel.SetActive(_enable);
         normalModel.SetActive(!_enable);
     }
-
 
 }

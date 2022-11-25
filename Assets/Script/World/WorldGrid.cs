@@ -20,7 +20,7 @@ public class WorldGrid : Singleton<WorldGrid> {
     /// <summary>
     /// Possible grid directions (diagonal not allowed)
     /// </summary>
-    public enum eDirections { UP,RIGHT,BOTTOM,LEFT}
+    public enum eDirections {UP,RIGHT,BOTTOM,LEFT}
 
     /// <summary>
     /// Tells you if grid has been completely initialized
