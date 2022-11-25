@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static RolesManager;
 
 public class SpottingAreaManager : MonoBehaviour
 {
@@ -33,8 +34,8 @@ public class SpottingAreaManager : MonoBehaviour
         spottingArea.SetCell(WorldGrid.Instance.GetCellAtPos(transform.position));
     }
 
-    public void SetType(Player.eRoles _type) {
-        spottingArea.Type = _type;
+    public void SetType(eRoles _type) {
+        spottingArea.Role = _type;
     }
 }
 

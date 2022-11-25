@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static RolesManager;
 
 public class Enemy : GridMover
 {
@@ -13,7 +14,7 @@ public class Enemy : GridMover
     private List<Transform> waypoints;
     private List<SpottingAreaManager> spottingManagers;
 
-    [SerializeField] Player.eRoles type;
+    [SerializeField] eRoles type;
 
     /// <summary>
     /// next waypoint index

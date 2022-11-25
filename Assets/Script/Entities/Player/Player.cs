@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEditor.Timeline;
 using UnityEditor.Timeline.Actions;
 using UnityEngine;
+using static RolesManager;
 
 public class Player : GridMover 
 {
@@ -15,8 +16,6 @@ public class Player : GridMover
 
     [SerializeField] GameObject normalModel;
     [SerializeField] GameObject rewindModel;
-
-    public enum eRoles {PLAYER,PAWN,TOWER,BISHOP}
     public bool IsVisible { get; private set; } = true;
 
     private RewindManager rewindManager;
@@ -24,7 +23,7 @@ public class Player : GridMover
     private bool isRewindActivated = false;
     private MeshRenderer meshRenderer;
     private IPlayerState playerState;
-    public eRoles Disguise = eRoles.PLAYER;
+    public eRoles Disguise = RolesManager.eRoles.PLAYER;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
