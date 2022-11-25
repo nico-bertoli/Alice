@@ -26,6 +26,7 @@ public class Player : GridMover
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
         meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
+        playerState = new DefaultPlayerState();
     }
 
     protected override void OnCellChanged() {
@@ -53,7 +54,7 @@ public class Player : GridMover
     private void handleMovementInput() {
         if(targetCell == null && InputManager.Instance.IsMoving) {
             Vector2 input = InputManager.Instance.MoveDirection;
-            playerState.Move(targetCell,CurrentCell);
+            playerState.Move(ref targetCell,ref currentCell,input);
 
             //allows rotation torwards walls
             if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IPlayerState
 {
-    public void Move(WorldCell _targetCell, WorldCell _currentCell);
+    public void Move(ref WorldCell _targetCell, ref WorldCell _currentCell,Vector2 _dir);
 }

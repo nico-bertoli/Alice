@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DefaultPlayerState : IPlayerState {
-    public void Move(WorldCell _targetCell, WorldCell _currentCell) {
+    public void Move(ref WorldCell _targetCell, ref WorldCell _currentCell, Vector2 _dir) {
         if (_targetCell == null) {
 
             WorldCell target = WorldGrid.Instance.GetAdjacentCell(_currentCell, _dir);
