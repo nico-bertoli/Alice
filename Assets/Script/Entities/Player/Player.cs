@@ -36,6 +36,7 @@ public class Player : GridMover
             case eDisguises.NO_DISGUISE:
             case eDisguises.TOWER:
                 playerState = new PlayerDefaultState();
+
                 break;
             case eDisguises.PAWN:
                 playerState = new PlayerPawnState(new Vector2(transform.forward.z, -transform.forward.x));
@@ -62,7 +63,15 @@ public class Player : GridMover
             handleRewindInput();
             RotateTorwardsTarget();
         }
+        handleDressDrop();
         MoveToTarget();
+    }
+
+    private void handleDressDrop() {
+        if (InputManager.Instance.IsDroppingDress && playerState.GetType() != typeof(PlayerDefaultState)) {
+                playerState = new PlayerDefaultState();
+            Debug.Log("Dress dropped");
+        }
     }
     
     private void move(Vector2 _dir) {
