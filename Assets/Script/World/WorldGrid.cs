@@ -44,8 +44,6 @@ public class WorldGrid : Singleton<WorldGrid> {
 
             //ris = cells[_cell.M - (int)Mathf.Ceil(_dir.y), _cell.N + (int)Mathf.Ceil(_dir.x)];
             ris = cells[_cell.M - Mathf.RoundToInt(_dir.y), _cell.N + Mathf.RoundToInt(_dir.x)];
-
-            Debug.Log(Mathf.Ceil(_dir.y) +","+ Mathf.Ceil(_dir.x));
         }
         // if the cell in given direction doesn't exist, null is returned
         catch {

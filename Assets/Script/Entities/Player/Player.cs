@@ -38,7 +38,7 @@ public class Player : GridMover
                 playerState = new PlayerDefaultState();
                 break;
             case eDisguises.PAWN:
-                playerState = new PlayerPawnState(new Vector2(transform.forward.z, transform.forward.x));
+                playerState = new PlayerPawnState(new Vector2(transform.forward.z, -transform.forward.x));
                 break;
             case eDisguises.BISHOP:
                 playerState = new PlayerBishopState();
