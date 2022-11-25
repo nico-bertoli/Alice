@@ -23,7 +23,7 @@ public class Enemy : GridMover
 
     protected override void Start() {
         base.Start();
-        WorldGrid.Instance.OnGridGenerationCompleted += Init;
+        //WorldGrid.Instance.OnGridGenerationCompleted += Init;
         GameController.Instance.RegisterEnemy(this);
     }
 

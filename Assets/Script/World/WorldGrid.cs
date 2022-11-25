@@ -129,4 +129,8 @@ public void RegisterCell(WorldCell _cell) {
         else
             return null;
     }
+
+    public Vector2 ConvertToVectorTwo(Vector3 _vector) {
+        return new Vector2(_vector.z, -_vector.x);
+    }
 }

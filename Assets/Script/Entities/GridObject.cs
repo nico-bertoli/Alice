@@ -12,6 +12,10 @@ public class GridObject : MonoBehaviour
         WorldGrid.Instance.OnGridGenerationCompleted += Init;
     }
 
+    //private void Awake() {
+    //    WorldGrid.Instance.OnGridGenerationCompleted += Init;
+    //}
+
     /// <summary>
     /// Setup object position on starting cell
     /// </summary>

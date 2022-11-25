@@ -40,13 +40,15 @@ public class Player : GridMover
 
                 break;
             case eRoles.PAWN:
-                playerState = new PlayerPawnState(new Vector2(transform.forward.z, -transform.forward.x));
+                playerState = new PlayerPawnState(WorldGrid.Instance.ConvertToVectorTwo(transform.forward));
+                //playerState = new PlayerPawnState(new Vector2(transform.forward.z, -transform.forward.x));
                 break;
             case eRoles.BISHOP:
                 playerState = new PlayerBishopState();
                 break;
         }
     }
+
 
     protected override void OnCellChanged() {
         rewindManager.RegisterFrame(CurrentCell);
@@ -87,6 +89,9 @@ public class Player : GridMover
 
                 if (targetObj != null && targetObj.tag == "Dor")
                     targetObj.GetComponent<Door>().TryOpenDor();
+
+                if (targetObj != null && targetObj.tag == "PushableBlock")
+                    targetObj.GetComponent<PushableBlock>().Push(_dir);
 
                 if (targetObj == null)
                     targetCell = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
@@ -145,7 +150,6 @@ public class Player : GridMover
     }
 
     private IEnumerator ActivateInvisibilityCor(float _duation) {
-        Debug.Log("invisible");
         IsVisible = false;
         meshRenderer.material = invisibilityMaterial;
         yield return new WaitForSeconds(_duation);
