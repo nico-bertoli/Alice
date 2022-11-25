@@ -54,7 +54,7 @@ public class Player : GridMover
     private void handleMovementInput() {
         if(targetCell == null && InputManager.Instance.IsMoving) {
             Vector2 input = InputManager.Instance.MoveDirection;
-            playerState.Move(ref targetCell,ref currentCell,input);
+            playerState.Move(ref targetCell,ref currentCell,ref input);
 
             //allows rotation torwards walls
             if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
