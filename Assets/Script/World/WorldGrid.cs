@@ -40,20 +40,17 @@ public class WorldGrid : Singleton<WorldGrid> {
     public WorldCell GetAdjacentCell(WorldCell _cell, Vector2 _dir) {
 
         WorldCell ris = null;
-        
-        if(_dir == Vector2.up) {
-            if (_cell.M != 0) ris = cells[_cell.M - 1, _cell.N];
-        }
-        else if (_dir == Vector2.down) {
-            if (_cell.M != nRows - 1) ris = cells[_cell.M + 1, _cell.N];
-        }
-        else if (_dir == Vector2.right) {
-            if (_cell.N != nCols - 1) ris = cells[_cell.M, _cell.N + 1];
-        }
-        else if (_dir == Vector2.left) {
-            if (_cell.N != 0) ris = cells[_cell.M, _cell.N - 1];
-        }
+        try {
 
+            ris = cells[_cell.M - (int)Mathf.Ceil(_dir.y), _cell.N + (int)Mathf.Ceil(_dir.x)];
+
+            Debug.Log(Mathf.Ceil(_dir.y) +","+ Mathf.Ceil(_dir.x));
+        }
+        // if the cell in given direction doesn't exist, null is returned
+        catch {
+            return null;
+        }
+        
         if (ris != null && Mathf.Abs(ris.Height - _cell.Height) > 1) ris = null;
 
         return ris;  
