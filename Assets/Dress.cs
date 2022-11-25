@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Dress : MonoBehaviour
 {
-    [SerializeField] Player.eDisguises disguiseType;
+    [SerializeField] Player.eRoles disguiseType;
 
     private void OnTriggerEnter(Collider other) {
         if(other.gameObject.tag == "Player") {

@@ -206,6 +206,7 @@ MonoBehaviour:
   rotationSpeed: 800
   wayPointsContainer: {fileID: 8873945443865913672}
   SpottingManagersContainer: {fileID: 4547831411374578953}
+  type: 1
 --- !u!1 &8873945443741684480
 GameObject:
   m_ObjectHideFlags: 0

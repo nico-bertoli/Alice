@@ -8,13 +8,12 @@ public class SpottingAreaManager : MonoBehaviour
     [SerializeField] GameObject spottingIndicatorPref;
     [SerializeField] bool debug;
 
-    private SpottingArea spottingIndicator;
+    private SpottingArea spottingArea;
     private WorldCell cell;
-    private Player player;
 
     private void Awake() {
         GetComponent<MeshRenderer>().enabled = false;
-        spottingIndicator = Instantiate(spottingIndicatorPref.GetComponent<SpottingArea>());
+        spottingArea = Instantiate(spottingIndicatorPref.GetComponent<SpottingArea>());
     }
 
     private void Start() {
@@ -22,7 +21,7 @@ public class SpottingAreaManager : MonoBehaviour
             () => {
                 cell = WorldGrid.Instance.GetCellAtPos(transform.position);
                 if (cell != null)
-                    spottingIndicator.transform.position = cell.Position;
+                    spottingArea.transform.position = cell.Position;
             };
     }
 
@@ -31,7 +30,11 @@ public class SpottingAreaManager : MonoBehaviour
     }
 
     public void HardSetArea() {
-        spottingIndicator.SetCell(WorldGrid.Instance.GetCellAtPos(transform.position));
+        spottingArea.SetCell(WorldGrid.Instance.GetCellAtPos(transform.position));
+    }
+
+    public void SetType(Player.eRoles _type) {
+        spottingArea.Type = _type;
     }
 }
 

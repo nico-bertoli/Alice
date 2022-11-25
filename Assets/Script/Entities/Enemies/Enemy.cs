@@ -12,6 +12,9 @@ public class Enemy : GridMover
     /// </summary>
     private List<Transform> waypoints;
     private List<SpottingAreaManager> spottingManagers;
+
+    [SerializeField] Player.eRoles type;
+
     /// <summary>
     /// next waypoint index
     /// </summary>
@@ -56,8 +59,11 @@ public class Enemy : GridMover
             waypoints.Add(wayPointsContainer.GetChild(i));
 
         spottingManagers = new List<SpottingAreaManager>();
-        for (int i = 0; i < SpottingManagersContainer.childCount; i++)
+        for (int i = 0; i < SpottingManagersContainer.childCount; i++) {
             spottingManagers.Add(SpottingManagersContainer.GetChild(i).GetComponent<SpottingAreaManager>());
+            spottingManagers[spottingManagers.Count - 1].SetType(type);
+        }
+            
     }
 
     protected override void OnDirectionChanged() {

@@ -1537,6 +1537,7 @@ MonoBehaviour:
   invisibilityMaterial: {fileID: 2100000, guid: 2c89f7b42615e3d4280192f33a0d2931, type: 2}
   normalModel: {fileID: 827984037}
   rewindModel: {fileID: 1883276972}
+  Disguise: 0
 --- !u!114 &1454039003
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -16,7 +16,7 @@ public class Player : GridMover
     [SerializeField] GameObject normalModel;
     [SerializeField] GameObject rewindModel;
 
-    public enum eDisguises {NO_DISGUISE,PAWN,TOWER,BISHOP}
+    public enum eRoles {PLAYER,PAWN,TOWER,BISHOP}
     public bool IsVisible { get; private set; } = true;
 
     private RewindManager rewindManager;
@@ -24,7 +24,7 @@ public class Player : GridMover
     private bool isRewindActivated = false;
     private MeshRenderer meshRenderer;
     private IPlayerState playerState;
-    public eDisguises Disguise = eDisguises.NO_DISGUISE;
+    public eRoles Disguise = eRoles.PLAYER;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
@@ -32,18 +32,18 @@ public class Player : GridMover
         playerState = new PlayerDefaultState();
     }
 
-    public void SetDisguise(eDisguises _disguise) {
+    public void SetDisguise(eRoles _disguise) {
         Disguise = _disguise;
         switch (_disguise) {
-            case eDisguises.NO_DISGUISE:
-            case eDisguises.TOWER:
+            case eRoles.PLAYER:
+            case eRoles.TOWER:
                 playerState = new PlayerDefaultState();
 
                 break;
-            case eDisguises.PAWN:
+            case eRoles.PAWN:
                 playerState = new PlayerPawnState(new Vector2(transform.forward.z, -transform.forward.x));
                 break;
-            case eDisguises.BISHOP:
+            case eRoles.BISHOP:
                 playerState = new PlayerBishopState();
                 break;
         }
@@ -70,7 +70,7 @@ public class Player : GridMover
     }
 
     private void handleDressDrop() {
-        if (InputManager.Instance.IsDroppingDress && Disguise != eDisguises.NO_DISGUISE) {
+        if (InputManager.Instance.IsDroppingDress && Disguise != eRoles.PLAYER) {
                 playerState = new PlayerDefaultState();
             Debug.Log("Dress dropped");
         }
