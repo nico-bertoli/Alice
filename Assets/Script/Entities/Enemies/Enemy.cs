@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static RolesManager;
 
 public class Enemy : GridMover
 {
@@ -12,6 +13,9 @@ public class Enemy : GridMover
     /// </summary>
     private List<Transform> waypoints;
     private List<SpottingAreaManager> spottingManagers;
+
+    [SerializeField] eRoles type;
+
     /// <summary>
     /// next waypoint index
     /// </summary>
@@ -49,14 +53,18 @@ public class Enemy : GridMover
     /// <summary>
     /// Initializes the object
     /// </summary>
-    private void Init() {
+    protected override void Init() {
+        base.Init();
         waypoints = new List<Transform>();
         for (int i = 0; i < wayPointsContainer.childCount; i++)
             waypoints.Add(wayPointsContainer.GetChild(i));
 
         spottingManagers = new List<SpottingAreaManager>();
-        for (int i = 0; i < SpottingManagersContainer.childCount; i++)
+        for (int i = 0; i < SpottingManagersContainer.childCount; i++) {
             spottingManagers.Add(SpottingManagersContainer.GetChild(i).GetComponent<SpottingAreaManager>());
+            spottingManagers[spottingManagers.Count - 1].SetType(type);
+        }
+            
     }
 
     protected override void OnDirectionChanged() {

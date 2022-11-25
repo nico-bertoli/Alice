@@ -20,7 +20,7 @@ public class WorldGrid : Singleton<WorldGrid> {
     /// <summary>
     /// Possible grid directions (diagonal not allowed)
     /// </summary>
-    public enum eDirections { UP,RIGHT,BOTTOM,LEFT}
+    //public enum eDirections {UP,RIGHT,BOTTOM,LEFT}
 
     /// <summary>
     /// Tells you if grid has been completely initialized
@@ -30,18 +30,6 @@ public class WorldGrid : Singleton<WorldGrid> {
     /// Called after grid generation is completed
     /// </summary>
     public Action OnGridGenerationCompleted;
-    
-    /// <summary>
-    /// Converts vector 2 to direction
-    /// </summary>
-    /// <param name="_vec"></param>
-    /// <returns></returns>
-    public static eDirections VectorToDir(Vector2 _vec) {
-        if(_vec == Vector2.left)return eDirections.LEFT;
-        if(_vec == Vector2.right)return eDirections.RIGHT;
-        if(_vec == Vector2.up)return eDirections.UP;
-        else return eDirections.BOTTOM;
-    }
 
     /// <summary>
     /// returns adjacent cell in given direction (null if not existing)
@@ -49,23 +37,19 @@ public class WorldGrid : Singleton<WorldGrid> {
     /// <param name="_cell"></param>
     /// <param name="_dir"></param>
     /// <returns></returns>
-    public WorldCell GetAdjacentCell(WorldCell _cell, eDirections _dir) {
-        WorldCell ris = null;
-        switch (_dir) {
-            case eDirections.UP:
-                if(_cell.M != 0)ris = cells[_cell.M-1,_cell.N];
-                break;
-            case eDirections.BOTTOM:
-                if(_cell.M != nRows-1) ris = cells[_cell.M+1, _cell.N];
-                break;
-            case eDirections.RIGHT:
-                if(_cell.N != nCols-1) ris = cells[_cell.M, _cell.N+1];
-                break;
-            case eDirections.LEFT:
-                if(_cell.N!= 0) ris = cells[_cell.M, _cell.N-1];
-                break;
-        }
+    public WorldCell GetAdjacentCell(WorldCell _cell, Vector2 _dir) {
 
+        WorldCell ris = null;
+        try {
+
+            //ris = cells[_cell.M - (int)Mathf.Ceil(_dir.y), _cell.N + (int)Mathf.Ceil(_dir.x)];
+            ris = cells[_cell.M - Mathf.RoundToInt(_dir.y), _cell.N + Mathf.RoundToInt(_dir.x)];
+        }
+        // if the cell in given direction doesn't exist, null is returned
+        catch {
+            return null;
+        }
+        
         if (ris != null && Mathf.Abs(ris.Height - _cell.Height) > 1) ris = null;
 
         return ris;  

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Timeline;
+using UnityEditor.Timeline.Actions;
 using UnityEngine;
+using static RolesManager;
 
 public class Player : GridMover 
 {
@@ -14,38 +16,35 @@ public class Player : GridMover
 
     [SerializeField] GameObject normalModel;
     [SerializeField] GameObject rewindModel;
-
-
     public bool IsVisible { get; private set; } = true;
 
     private RewindManager rewindManager;
     private float lastTimeAbilityUsed;
     private bool isRewindActivated = false;
     private MeshRenderer meshRenderer;
+    private IPlayerState playerState;
+    public eRoles Disguise = RolesManager.eRoles.PLAYER;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
         meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
+        playerState = new PlayerDefaultState();
     }
 
-    /// <summary>
-    /// Moves player in adjacent cell in given direction (if possible)
-    /// </summary>
-    /// <param name="_dir">direction to move torwards</param>
-    public void MoveToAdjacentCell(WorldGrid.eDirections _dir) {
-        if (targetCell == null) {
+    public void SetDisguise(eRoles _disguise) {
+        Disguise = _disguise;
+        switch (_disguise) {
+            case eRoles.PLAYER:
+            case eRoles.TOWER:
+                playerState = new PlayerDefaultState();
 
-            WorldCell target = WorldGrid.Instance.GetAdjacentCell(CurrentCell, _dir);
-            if (target != null) {
-
-                GameObject targetObj = target.CurrentObject;
-
-                if (targetObj != null && targetObj.tag == "Dor")
-                    targetObj.GetComponent<Door>().TryOpenDor();
-
-                if (targetObj == null)
-                    targetCell = WorldGrid.Instance.GetAdjacentCell(CurrentCell, _dir);
-            }
+                break;
+            case eRoles.PAWN:
+                playerState = new PlayerPawnState(new Vector2(transform.forward.z, -transform.forward.x));
+                break;
+            case eRoles.BISHOP:
+                playerState = new PlayerBishopState();
+                break;
         }
     }
 
@@ -65,7 +64,34 @@ public class Player : GridMover
             handleRewindInput();
             RotateTorwardsTarget();
         }
+        handleDressDrop();
         MoveToTarget();
+    }
+
+    private void handleDressDrop() {
+        if (InputManager.Instance.IsDroppingDress && Disguise != eRoles.PLAYER) {
+                playerState = new PlayerDefaultState();
+            Debug.Log("Dress dropped");
+        }
+    }
+    
+    private void move(Vector2 _dir) {
+        if (targetCell == null) {
+
+            Debug.Log(_dir);
+
+            WorldCell target = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
+            if (target != null) {
+
+                GameObject targetObj = target.CurrentObject;
+
+                if (targetObj != null && targetObj.tag == "Dor")
+                    targetObj.GetComponent<Door>().TryOpenDor();
+
+                if (targetObj == null)
+                    targetCell = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
+            }
+        }
     }
 
     /// <summary>
@@ -74,8 +100,8 @@ public class Player : GridMover
     private void handleMovementInput() {
         if(targetCell == null && InputManager.Instance.IsMoving) {
             Vector2 input = InputManager.Instance.MoveDirection;
-            MoveToAdjacentCell(WorldGrid.VectorToDir(input));
-
+            playerState.FilterInput(ref input);
+            move(input);
             //allows rotation torwards walls
             if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
         }
@@ -133,6 +159,5 @@ public class Player : GridMover
         rewindModel.SetActive(_enable);
         normalModel.SetActive(!_enable);
     }
-
 
 }

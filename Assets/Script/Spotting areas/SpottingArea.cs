@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static RolesManager;
 
 public class SpottingArea : MonoBehaviour
 {
@@ -8,6 +9,8 @@ public class SpottingArea : MonoBehaviour
     private WorldCell cell;
     private Player player;
     private static float? firstPlayerSeenTime = null;
+
+    public eRoles Role { get; set;}
 
     private const float VIEW_SECONDS_FOR_GAMEOVER = 0.05f;
 
@@ -32,7 +35,7 @@ public class SpottingArea : MonoBehaviour
     }
 
     private void handlePlayerVision() {
-        if (cell == player.CurrentCell && cell != null && player.IsVisible) {
+        if (cell == player.CurrentCell && cell != null && player.IsVisible && IsRoleLowerThan(player.Disguise,Role)) {
             if (firstPlayerSeenTime != null && Time.time - firstPlayerSeenTime >= VIEW_SECONDS_FOR_GAMEOVER)
                 GameController.Instance.GameOver();
             else if (firstPlayerSeenTime == null)
@@ -43,5 +46,7 @@ public class SpottingArea : MonoBehaviour
                 firstPlayerSeenTime = null;
         }
     }
+
+    
 
 }
