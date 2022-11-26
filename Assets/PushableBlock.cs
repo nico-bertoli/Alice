@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class PushableBlock : GridMover
 {
-    //protected override void Start() {
-    //    base.Start();
-    //    Init();
-    //}
     public void Push(Vector2 _dir) {
-        Debug.Log("push called with dir: "+_dir);
         targetCell = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
-        Debug.Log("current: "+currentCell+"target: "+targetCell);
+        if (targetCell.CurrentObject != null) targetCell = null;
     }
 
     protected override void OnCellChanged() {}
