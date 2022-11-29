@@ -34,6 +34,11 @@ public class Player : GridMover {
         foreach (GameObject obj in possibleMovementIndicators) obj.SetActive(false);
     }
 
+    protected override void Start() {
+        base.Start();
+        WorldGrid.Instance.OnGridGenerationCompleted += playerState.RefreshPossibleMoveIndicators;
+    }
+
     public void SetDisguise(eRoles _disguise) {
         Disguise = _disguise;
         switch (_disguise) {
@@ -44,7 +49,6 @@ public class Player : GridMover {
                 break;
             case eRoles.PAWN:
                 playerState = new PlayerPawnState(this,WorldGrid.Instance.ConvertToVectorTwo(transform.forward));
-                //playerState = new PlayerPawnState(new Vector2(transform.forward.z, -transform.forward.x));
                 break;
             case eRoles.BISHOP:
                 playerState = new PlayerBishopState(this);
@@ -83,8 +87,8 @@ public class Player : GridMover {
 
     private void handleDressDrop() {
         if (InputManager.Instance.IsDroppingDress && Disguise != eRoles.PLAYER) {
-                playerState = new PlayerDefaultState(this);
-            Debug.Log("Dress dropped");
+            playerState = new PlayerDefaultState(this);
+            playerState.RefreshPossibleMoveIndicators();
         }
     }
 
