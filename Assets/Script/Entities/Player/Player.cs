@@ -24,13 +24,13 @@ public class Player : GridMover {
     private float lastTimeAbilityUsed;
     private bool isRewindActivated = false;
     private MeshRenderer meshRenderer;
-    private IPlayerState playerState;
+    private AbsPlayerState playerState;
     public eRoles Disguise = RolesManager.eRoles.PLAYER;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
         meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
-        playerState = new PlayerDefaultState();
+        playerState = new PlayerDefaultState(this);
     }
 
     public void SetDisguise(eRoles _disguise) {
@@ -38,15 +38,15 @@ public class Player : GridMover {
         switch (_disguise) {
             case eRoles.PLAYER:
             case eRoles.TOWER:
-                playerState = new PlayerDefaultState();
+                playerState = new PlayerDefaultState(this);
 
                 break;
             case eRoles.PAWN:
-                playerState = new PlayerPawnState(WorldGrid.Instance.ConvertToVectorTwo(transform.forward));
+                playerState = new PlayerPawnState(this,WorldGrid.Instance.ConvertToVectorTwo(transform.forward));
                 //playerState = new PlayerPawnState(new Vector2(transform.forward.z, -transform.forward.x));
                 break;
             case eRoles.BISHOP:
-                playerState = new PlayerBishopState();
+                playerState = new PlayerBishopState(this);
                 break;
         }
     }
@@ -61,7 +61,7 @@ public class Player : GridMover {
 
     protected override void OnCellChanged() {
         rewindManager.RegisterFrame(CurrentCell);
-        playerState.RefreshPossibleMoves(this);
+        //playerState.RefreshPossibleMoves(this);
     }
 
     protected override void OnDirectionChanged() { }
@@ -82,28 +82,8 @@ public class Player : GridMover {
 
     private void handleDressDrop() {
         if (InputManager.Instance.IsDroppingDress && Disguise != eRoles.PLAYER) {
-                playerState = new PlayerDefaultState();
+                playerState = new PlayerDefaultState(this);
             Debug.Log("Dress dropped");
-        }
-    }
-
-    private void moveTorwards(Vector2 _dir) {
-        if (targetCell == null) {
-
-            WorldCell target = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
-            if (target != null) {
-
-                GameObject targetObj = target.CurrentObject;
-
-                if (targetObj != null && targetObj.tag == "Dor")
-                    targetObj.GetComponent<Door>().TryOpenDor();
-
-                if (targetObj != null && targetObj.tag == "PushableBlock")
-                    targetObj.GetComponent<PushableBlock>().Push(_dir);
-
-                if (targetObj == null)
-                    targetCell = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
-            }
         }
     }
 
@@ -113,10 +93,10 @@ public class Player : GridMover {
     private void handleMovementInput() {
         if(targetCell == null && InputManager.Instance.IsMoving) {
             Vector2 input = InputManager.Instance.MoveDirection;
-            playerState.Move(this,ref input);
+            playerState.Move(ref input);
 
             //allows rotation torwards walls
-            if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
+            //if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
         }
     }
 
@@ -172,27 +152,94 @@ public class Player : GridMover {
         normalModel.SetActive(!_enable);
     }
 
-    private interface IPlayerState {
+    //======================================================================================= states
+    private abstract class AbsPlayerState {
+        protected Player player;
+        public AbsPlayerState (Player _player) { player = _player; }
+
         /// <summary>
         /// Makes the player move in the given direction
         /// </summary>
         /// <param name="_player"></param>
         /// <param name="_dir"></param>
-        public void Move(Player _player, ref Vector2 _dir);
+        public abstract void Move(ref Vector2 _dir);
 
-        public void RefreshPossibleMoves(Player _player);
+        public abstract void RefreshPossibleMoves(Player _player);
+
+        protected void makePlayerMoveTorwards(Vector2 _dir) {
+            if (player.targetCell == null) {
+
+                WorldCell target = WorldGrid.Instance.GetAdjacentCell(player.currentCell, _dir);
+                if (target != null) {
+
+                    GameObject targetObj = target.CurrentObject;
+
+                    if (targetObj != null && targetObj.tag == "Dor")
+                        targetObj.GetComponent<Door>().TryOpenDor();
+
+                    if (targetObj != null && targetObj.tag == "PushableBlock")
+                        targetObj.GetComponent<PushableBlock>().Push(_dir);
+
+                    if (targetObj == null)
+                        player.targetCell = WorldGrid.Instance.GetAdjacentCell(player.currentCell, _dir);
+                }
+            }
+        }
     }
 
-    private class PlayerDefaultState : IPlayerState {
+    private class PlayerDefaultState : AbsPlayerState {
+        public PlayerDefaultState(Player _player) : base(_player) {}
 
-        public void Move(Player _player, ref Vector2 _dir) {
-            if (_dir != Vector2.up && _dir != Vector2.right && _dir != Vector2.left && _dir != Vector2.down) _dir = Vector2.zero;
+        public override void Move(ref Vector2 _dir) {
+            if (_dir == Vector2.up || _dir == Vector2.right || _dir == Vector2.left || _dir == Vector2.down) makePlayerMoveTorwards(_dir);
         }
 
-        public void RefreshPossibleMoves(Player _player) {
-            if (_player.GetAdjacentCell(Vector2.up))
+        public override void RefreshPossibleMoves(Player _player) {
+            //if (_player.GetAdjacentCell(Vector2.up))
+        }
+    }
 
+    private class PlayerBishopState : AbsPlayerState {
+        public PlayerBishopState(Player _player) : base(_player) {}
+
+        public override void Move(ref Vector2 _dir) {
+            int y = Mathf.RoundToInt(_dir.y);
+            int x = Mathf.RoundToInt(_dir.x);
+
+            y = Mathf.Abs(y);
+            x = Mathf.Abs(x);
+
+            if (x + y == 2) makePlayerMoveTorwards(_dir);
+        }
+
+        public override void RefreshPossibleMoves(Player _player) {
+            throw new System.NotImplementedException();
+        }
     }
+
+    private class PlayerPawnState : AbsPlayerState {
+        private Vector2 startDirection;
+        public PlayerPawnState(Player _player, Vector2 _startDirection) : base(_player) {
+
+            //caso in cui travestimento preso con alfiere
+            if (_startDirection != Vector2.up && _startDirection != Vector2.down && _startDirection != Vector2.right && _startDirection != Vector2.left) {
+                if (_startDirection.x > 0) startDirection = Vector2.right;
+                else startDirection = Vector2.up;
+            }
+
+            startDirection = _startDirection.normalized;
+        }
+
+        public override void Move(ref Vector2 _dir) {
+            if (_dir == startDirection)
+               makePlayerMoveTorwards(_dir);
+        }
+
+        public override void RefreshPossibleMoves(Player _player) {
+            throw new System.NotImplementedException();
+        }
     }
+
+
 
 }
