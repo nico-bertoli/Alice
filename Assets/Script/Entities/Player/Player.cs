@@ -25,12 +25,13 @@ public class Player : GridMover {
     private bool isRewindActivated = false;
     private MeshRenderer meshRenderer;
     private AbsPlayerState playerState;
-    public eRoles Disguise = RolesManager.eRoles.PLAYER;
+    public eRoles Disguise = eRoles.PLAYER;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
         meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
         playerState = new PlayerDefaultState(this);
+        foreach (GameObject obj in possibleMovementIndicators) obj.SetActive(false);
     }
 
     public void SetDisguise(eRoles _disguise) {
@@ -61,7 +62,7 @@ public class Player : GridMover {
 
     protected override void OnCellChanged() {
         rewindManager.RegisterFrame(CurrentCell);
-        playerState.RefreshPossibleMoves(this);
+        playerState.RefreshPossibleMoveIndicators();
     }
 
     protected override void OnDirectionChanged() { }
@@ -164,7 +165,24 @@ public class Player : GridMover {
         /// <param name="_dir"></param>
         public abstract void Move(ref Vector2 _dir);
 
-        public abstract void RefreshPlayerPossibleMovesIndicators();
+        protected List<Vector2> possibleDirections;
+
+        public void RefreshPossibleMoveIndicators() {
+            for (int i = 0; i < possibleDirections.Count; i++) {
+                WorldCell targetCell = WorldGrid.Instance.GetAdjacentCell(player.currentCell, possibleDirections[i]);
+                if (targetCell) {
+                    player.possibleMovementIndicators[i].SetActive(true);
+                    player.possibleMovementIndicators[i].transform.position = targetCell.Position;
+                }
+                else {
+                    player.possibleMovementIndicators[i].SetActive(false);
+                }
+            }
+
+            //deactivating unused indicators
+            for (int i = possibleDirections.Count; i < player.possibleMovementIndicators.Count; i++)
+                player.possibleMovementIndicators[i].SetActive(false);
+        }
 
         protected void makePlayerMoveTorwards(Vector2 _dir) {
             if (player.targetCell == null) {
@@ -186,21 +204,29 @@ public class Player : GridMover {
             }
         }
     }
-
+    //----------------------------------
     private class PlayerDefaultState : AbsPlayerState {
-        public PlayerDefaultState(Player _player) : base(_player) {}
+
+        public PlayerDefaultState(Player _player) : base(_player) {
+             possibleDirections = new List<Vector2> { Vector2.up, Vector2.down, Vector2.right, Vector2.left };
+        }
 
         public override void Move(ref Vector2 _dir) {
-            if (_dir == Vector2.up || _dir == Vector2.right || _dir == Vector2.left || _dir == Vector2.down) makePlayerMoveTorwards(_dir);
+            if (possibleDirections.Contains(_dir)) makePlayerMoveTorwards(_dir);
         }
 
-        public override void RefreshPlayerPossibleMovesIndicators() {
-            player.GetAdjacentCell(Vector2.up)
-        }
+        
     }
-
+    //----------------------------------
     private class PlayerBishopState : AbsPlayerState {
-        public PlayerBishopState(Player _player) : base(_player) {}
+        public PlayerBishopState(Player _player) : base(_player) {
+            possibleDirections = new List<Vector2> { 
+                (Vector2.up+Vector2.right).normalized,
+                (Vector2.up+Vector2.left).normalized,
+                (Vector2.down+Vector2.right).normalized,
+                (Vector2.down+Vector2.left).normalized,
+            };
+        }
 
         public override void Move(ref Vector2 _dir) {
             int y = Mathf.RoundToInt(_dir.y);
@@ -211,12 +237,8 @@ public class Player : GridMover {
 
             if (x + y == 2) makePlayerMoveTorwards(_dir);
         }
-
-        public override void RefreshPlayerPossibleMovesIndicators() {
-            throw new System.NotImplementedException();
-        }
     }
-
+    //----------------------------------
     private class PlayerPawnState : AbsPlayerState {
         private Vector2 startDirection;
         public PlayerPawnState(Player _player, Vector2 _startDirection) : base(_player) {
@@ -228,15 +250,12 @@ public class Player : GridMover {
             }
 
             startDirection = _startDirection.normalized;
-        }
+            possibleDirections = new List<Vector2> { startDirection };
+            }
 
         public override void Move(ref Vector2 _dir) {
             if (_dir == startDirection)
                makePlayerMoveTorwards(_dir);
-        }
-
-        public override void RefreshPlayerPossibleMovesIndicators() {
-            throw new System.NotImplementedException();
         }
     }
 
