@@ -5,8 +5,7 @@ using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using static RolesManager;
 
-public class Player : GridMover 
-{
+public class Player : GridMover {
     [SerializeField] float rewindSeconds = 5f;
     [SerializeField] float rewindCoolDown = 5f;
     [SerializeField] float rewindAnimationSpeed = 4f;
@@ -16,6 +15,9 @@ public class Player : GridMover
 
     [SerializeField] GameObject normalModel;
     [SerializeField] GameObject rewindModel;
+
+    [SerializeField] List<GameObject> possibleMovementIndicators;
+
     public bool IsVisible { get; private set; } = true;
 
     private RewindManager rewindManager;
@@ -49,9 +51,17 @@ public class Player : GridMover
         }
     }
 
+    public WorldCell GetAdjacentCell(Vector2 _dir) {
+        return WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
+    }
+
+    public List<GameObject> GetPossibleMovementIndicators(){
+        return possibleMovementIndicators;
+    }
 
     protected override void OnCellChanged() {
         rewindManager.RegisterFrame(CurrentCell);
+        playerState.RefreshPossibleMoves(this);
     }
 
     protected override void OnDirectionChanged() { }
@@ -76,11 +86,9 @@ public class Player : GridMover
             Debug.Log("Dress dropped");
         }
     }
-    
-    private void move(Vector2 _dir) {
-        if (targetCell == null) {
 
-            Debug.Log(_dir);
+    private void moveTorwards(Vector2 _dir) {
+        if (targetCell == null) {
 
             WorldCell target = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
             if (target != null) {
@@ -105,8 +113,8 @@ public class Player : GridMover
     private void handleMovementInput() {
         if(targetCell == null && InputManager.Instance.IsMoving) {
             Vector2 input = InputManager.Instance.MoveDirection;
-            playerState.FilterInput(ref input);
-            move(input);
+            playerState.Move(this,ref input);
+
             //allows rotation torwards walls
             if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
         }
@@ -162,6 +170,29 @@ public class Player : GridMover
         isRewindActivated = _enable;
         rewindModel.SetActive(_enable);
         normalModel.SetActive(!_enable);
+    }
+
+    private interface IPlayerState {
+        /// <summary>
+        /// Makes the player move in the given direction
+        /// </summary>
+        /// <param name="_player"></param>
+        /// <param name="_dir"></param>
+        public void Move(Player _player, ref Vector2 _dir);
+
+        public void RefreshPossibleMoves(Player _player);
+    }
+
+    private class PlayerDefaultState : IPlayerState {
+
+        public void Move(Player _player, ref Vector2 _dir) {
+            if (_dir != Vector2.up && _dir != Vector2.right && _dir != Vector2.left && _dir != Vector2.down) _dir = Vector2.zero;
+        }
+
+        public void RefreshPossibleMoves(Player _player) {
+            if (_player.GetAdjacentCell(Vector2.up))
+
+    }
     }
 
 }
