@@ -5,8 +5,7 @@ using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using static RolesManager;
 
-public class Player : GridMover 
-{
+public class Player : GridMover {
     [SerializeField] float rewindSeconds = 5f;
     [SerializeField] float rewindCoolDown = 5f;
     [SerializeField] float rewindAnimationSpeed = 4f;
@@ -16,19 +15,28 @@ public class Player : GridMover
 
     [SerializeField] GameObject normalModel;
     [SerializeField] GameObject rewindModel;
+
+    [SerializeField] List<GameObject> possibleMovementIndicators;
+
     public bool IsVisible { get; private set; } = true;
 
     private RewindManager rewindManager;
     private float lastTimeAbilityUsed;
     private bool isRewindActivated = false;
     private MeshRenderer meshRenderer;
-    private IPlayerState playerState;
-    public eRoles Disguise = RolesManager.eRoles.PLAYER;
+    private AbsPlayerState playerState;
+    public eRoles Disguise = eRoles.PLAYER;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
         meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
-        playerState = new PlayerDefaultState();
+        playerState = new PlayerDefaultState(this);
+        foreach (GameObject obj in possibleMovementIndicators) obj.SetActive(false);
+    }
+
+    protected override void Start() {
+        base.Start();
+        WorldGrid.Instance.OnGridGenerationCompleted += playerState.RefreshPossibleMoveIndicators;
     }
 
     public void SetDisguise(eRoles _disguise) {
@@ -36,22 +44,29 @@ public class Player : GridMover
         switch (_disguise) {
             case eRoles.PLAYER:
             case eRoles.TOWER:
-                playerState = new PlayerDefaultState();
+                playerState = new PlayerDefaultState(this);
 
                 break;
             case eRoles.PAWN:
-                playerState = new PlayerPawnState(WorldGrid.Instance.ConvertToVectorTwo(transform.forward));
-                //playerState = new PlayerPawnState(new Vector2(transform.forward.z, -transform.forward.x));
+                playerState = new PlayerPawnState(this,WorldGrid.Instance.ConvertToVectorTwo(transform.forward));
                 break;
             case eRoles.BISHOP:
-                playerState = new PlayerBishopState();
+                playerState = new PlayerBishopState(this);
                 break;
         }
     }
 
+    public WorldCell GetAdjacentCell(Vector2 _dir) {
+        return WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
+    }
+
+    public List<GameObject> GetPossibleMovementIndicators(){
+        return possibleMovementIndicators;
+    }
 
     protected override void OnCellChanged() {
         rewindManager.RegisterFrame(CurrentCell);
+        playerState.RefreshPossibleMoveIndicators();
     }
 
     protected override void OnDirectionChanged() { }
@@ -72,30 +87,8 @@ public class Player : GridMover
 
     private void handleDressDrop() {
         if (InputManager.Instance.IsDroppingDress && Disguise != eRoles.PLAYER) {
-                playerState = new PlayerDefaultState();
-            Debug.Log("Dress dropped");
-        }
-    }
-    
-    private void move(Vector2 _dir) {
-        if (targetCell == null) {
-
-            Debug.Log(_dir);
-
-            WorldCell target = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
-            if (target != null) {
-
-                GameObject targetObj = target.CurrentObject;
-
-                if (targetObj != null && targetObj.tag == "Dor")
-                    targetObj.GetComponent<Door>().TryOpenDor();
-
-                if (targetObj != null && targetObj.tag == "PushableBlock")
-                    targetObj.GetComponent<PushableBlock>().Push(_dir);
-
-                if (targetObj == null)
-                    targetCell = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
-            }
+            playerState = new PlayerDefaultState(this);
+            playerState.RefreshPossibleMoveIndicators();
         }
     }
 
@@ -105,10 +98,10 @@ public class Player : GridMover
     private void handleMovementInput() {
         if(targetCell == null && InputManager.Instance.IsMoving) {
             Vector2 input = InputManager.Instance.MoveDirection;
-            playerState.FilterInput(ref input);
-            move(input);
+            playerState.Move(ref input);
+
             //allows rotation torwards walls
-            if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
+            //if (targetCell == null) previousDirection = new Vector3(-input.y,0,input.x);
         }
     }
 
@@ -163,5 +156,113 @@ public class Player : GridMover
         rewindModel.SetActive(_enable);
         normalModel.SetActive(!_enable);
     }
+
+    //======================================================================================= states
+    private abstract class AbsPlayerState {
+        protected Player player;
+        public AbsPlayerState (Player _player) { player = _player; }
+
+        /// <summary>
+        /// Makes the player move in the given direction
+        /// </summary>
+        /// <param name="_player"></param>
+        /// <param name="_dir"></param>
+        public abstract void Move(ref Vector2 _dir);
+
+        protected List<Vector2> possibleDirections;
+
+        public void RefreshPossibleMoveIndicators() {
+            for (int i = 0; i < possibleDirections.Count; i++) {
+                WorldCell targetCell = WorldGrid.Instance.GetAdjacentCell(player.currentCell, possibleDirections[i]);
+                if (targetCell) {
+                    player.possibleMovementIndicators[i].SetActive(true);
+                    player.possibleMovementIndicators[i].transform.position = targetCell.Position;
+                }
+                else {
+                    player.possibleMovementIndicators[i].SetActive(false);
+                }
+            }
+
+            //deactivating unused indicators
+            for (int i = possibleDirections.Count; i < player.possibleMovementIndicators.Count; i++)
+                player.possibleMovementIndicators[i].SetActive(false);
+        }
+
+        protected void makePlayerMoveTorwards(Vector2 _dir) {
+            if (player.targetCell == null) {
+
+                WorldCell target = WorldGrid.Instance.GetAdjacentCell(player.currentCell, _dir);
+                if (target != null) {
+
+                    GameObject targetObj = target.CurrentObject;
+
+                    if (targetObj != null && targetObj.tag == "Dor")
+                        targetObj.GetComponent<Door>().TryOpenDor();
+
+                    if (targetObj != null && targetObj.tag == "PushableBlock")
+                        targetObj.GetComponent<PushableBlock>().Push(_dir);
+
+                    if (targetObj == null)
+                        player.targetCell = WorldGrid.Instance.GetAdjacentCell(player.currentCell, _dir);
+                }
+            }
+        }
+    }
+    //----------------------------------
+    private class PlayerDefaultState : AbsPlayerState {
+
+        public PlayerDefaultState(Player _player) : base(_player) {
+             possibleDirections = new List<Vector2> { Vector2.up, Vector2.down, Vector2.right, Vector2.left };
+        }
+
+        public override void Move(ref Vector2 _dir) {
+            if (possibleDirections.Contains(_dir)) makePlayerMoveTorwards(_dir);
+        }
+
+        
+    }
+    //----------------------------------
+    private class PlayerBishopState : AbsPlayerState {
+        public PlayerBishopState(Player _player) : base(_player) {
+            possibleDirections = new List<Vector2> { 
+                (Vector2.up+Vector2.right).normalized,
+                (Vector2.up+Vector2.left).normalized,
+                (Vector2.down+Vector2.right).normalized,
+                (Vector2.down+Vector2.left).normalized,
+            };
+        }
+
+        public override void Move(ref Vector2 _dir) {
+            int y = Mathf.RoundToInt(_dir.y);
+            int x = Mathf.RoundToInt(_dir.x);
+
+            y = Mathf.Abs(y);
+            x = Mathf.Abs(x);
+
+            if (x + y == 2) makePlayerMoveTorwards(_dir);
+        }
+    }
+    //----------------------------------
+    private class PlayerPawnState : AbsPlayerState {
+        private Vector2 startDirection;
+        public PlayerPawnState(Player _player, Vector2 _startDirection) : base(_player) {
+
+            //caso in cui travestimento preso con alfiere
+            if (_startDirection != Vector2.up && _startDirection != Vector2.down && _startDirection != Vector2.right && _startDirection != Vector2.left) {
+                if (_startDirection.x > 0) startDirection = Vector2.right;
+                else startDirection = Vector2.up;
+            }
+
+            startDirection = _startDirection.normalized;
+            possibleDirections = new List<Vector2> { startDirection };
+            }
+
+        public override void Move(ref Vector2 _dir) {
+            if (_dir == startDirection)
+               makePlayerMoveTorwards(_dir);
+        }
+    }
+
+
 
 }
