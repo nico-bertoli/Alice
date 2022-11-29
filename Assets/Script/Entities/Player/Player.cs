@@ -31,7 +31,7 @@ public class Player : GridMover {
         rewindManager = new RewindManager(rewindSeconds);
         meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
         playerState = new PlayerDefaultState(this);
-        foreach (GameObject obj in possibleMovementIndicators) obj.SetActive(false);
+        for (int i = 0; i < possibleMovementIndicators.Count - 1; i++) possibleMovementIndicators[i].SetActive(true);
     }
 
     protected override void Start() {
@@ -184,8 +184,11 @@ public class Player : GridMover {
             }
 
             //deactivating unused indicators
-            for (int i = possibleDirections.Count; i < player.possibleMovementIndicators.Count; i++)
+            for (int i = possibleDirections.Count; i < player.possibleMovementIndicators.Count-1; i++)
                 player.possibleMovementIndicators[i].SetActive(false);
+
+            //setting allways present indicator under player
+            player.possibleMovementIndicators[player.possibleMovementIndicators.Count-1].transform.position = player.currentCell.Position;
         }
 
         protected void makePlayerMoveTorwards(Vector2 _dir) {
