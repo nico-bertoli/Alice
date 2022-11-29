@@ -61,7 +61,7 @@ public class Player : GridMover {
 
     protected override void OnCellChanged() {
         rewindManager.RegisterFrame(CurrentCell);
-        //playerState.RefreshPossibleMoves(this);
+        playerState.RefreshPossibleMoves(this);
     }
 
     protected override void OnDirectionChanged() { }
@@ -164,7 +164,7 @@ public class Player : GridMover {
         /// <param name="_dir"></param>
         public abstract void Move(ref Vector2 _dir);
 
-        public abstract void RefreshPossibleMoves(Player _player);
+        public abstract void RefreshPlayerPossibleMovesIndicators();
 
         protected void makePlayerMoveTorwards(Vector2 _dir) {
             if (player.targetCell == null) {
@@ -194,8 +194,8 @@ public class Player : GridMover {
             if (_dir == Vector2.up || _dir == Vector2.right || _dir == Vector2.left || _dir == Vector2.down) makePlayerMoveTorwards(_dir);
         }
 
-        public override void RefreshPossibleMoves(Player _player) {
-            //if (_player.GetAdjacentCell(Vector2.up))
+        public override void RefreshPlayerPossibleMovesIndicators() {
+            player.GetAdjacentCell(Vector2.up)
         }
     }
 
@@ -212,7 +212,7 @@ public class Player : GridMover {
             if (x + y == 2) makePlayerMoveTorwards(_dir);
         }
 
-        public override void RefreshPossibleMoves(Player _player) {
+        public override void RefreshPlayerPossibleMovesIndicators() {
             throw new System.NotImplementedException();
         }
     }
@@ -235,7 +235,7 @@ public class Player : GridMover {
                makePlayerMoveTorwards(_dir);
         }
 
-        public override void RefreshPossibleMoves(Player _player) {
+        public override void RefreshPlayerPossibleMovesIndicators() {
             throw new System.NotImplementedException();
         }
     }
