@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,7 +15,20 @@ public class WorldCell : MonoBehaviour
     //object
     public int N { get { return (int)transform.position.z; } }
     public int M { get { return (int)transform.position.x; } }
-    public GameObject CurrentObject { get; set; }
+
+    private GameObject currentObject;
+    public GameObject CurrentObject {
+        get {
+            return currentObject;
+        }
+        set {
+            currentObject = value;
+            if(OnCurrentObjectChange!=null)
+                OnCurrentObjectChange();
+        }
+    }
+
+    public Action OnCurrentObjectChange;
 
     public int Height { get {
             return (int)transform.position.y;

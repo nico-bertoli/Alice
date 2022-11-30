@@ -40,6 +40,26 @@ public abstract class GridMover : GridObject
         }
     }
 
+    public void makeMoveTorwardsDirection(Vector2 _dir) {
+        if (targetCell == null) {
+
+            WorldCell target = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
+            if (target != null) {
+
+                GameObject targetObj = target.CurrentObject;
+
+                if (targetObj != null && targetObj.tag == "Dor")
+                    targetObj.GetComponent<Door>().TryOpenDor();
+
+                if (targetObj != null && targetObj.tag == "PushableBlock")
+                    targetObj.GetComponent<PushableBlock>().Push(_dir);
+
+                if (targetObj == null)
+                    targetCell = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);
+            }
+        }
+    }
+
     /// <summary>
     /// Setup object position on starting cell
     /// </summary>

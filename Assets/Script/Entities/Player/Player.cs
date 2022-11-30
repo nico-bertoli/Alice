@@ -194,25 +194,25 @@ public class Player : GridMover {
             player.possibleMovementIndicators[player.possibleMovementIndicators.Count-1].transform.position = player.currentCell.Position;
         }
 
-        protected void makePlayerMoveTorwards(Vector2 _dir) {
-            if (player.targetCell == null) {
+        //protected void makePlayerMoveTorwards(Vector2 _dir) {
+        //    if (player.targetCell == null) {
 
-                WorldCell target = WorldGrid.Instance.GetAdjacentCell(player.currentCell, _dir);
-                if (target != null) {
+        //        WorldCell target = WorldGrid.Instance.GetAdjacentCell(player.currentCell, _dir);
+        //        if (target != null) {
 
-                    GameObject targetObj = target.CurrentObject;
+        //            GameObject targetObj = target.CurrentObject;
 
-                    if (targetObj != null && targetObj.tag == "Dor")
-                        targetObj.GetComponent<Door>().TryOpenDor();
+        //            if (targetObj != null && targetObj.tag == "Dor")
+        //                targetObj.GetComponent<Door>().TryOpenDor();
 
-                    if (targetObj != null && targetObj.tag == "PushableBlock")
-                        targetObj.GetComponent<PushableBlock>().Push(_dir);
+        //            if (targetObj != null && targetObj.tag == "PushableBlock")
+        //                targetObj.GetComponent<PushableBlock>().Push(_dir);
 
-                    if (targetObj == null)
-                        player.targetCell = WorldGrid.Instance.GetAdjacentCell(player.currentCell, _dir);
-                }
-            }
-        }
+        //            if (targetObj == null)
+        //                player.targetCell = WorldGrid.Instance.GetAdjacentCell(player.currentCell, _dir);
+        //        }
+        //    }
+        //}
 
         protected Vector2 adjustStartDirection(Vector2 _startDirection) {
 
@@ -246,7 +246,7 @@ public class Player : GridMover {
         }
 
         public override void Move(ref Vector2 _dir) {
-            if (possibleDirections.Contains(_dir)) makePlayerMoveTorwards(_dir);
+            if (possibleDirections.Contains(_dir)) player.makeMoveTorwardsDirection(_dir);
         }
 
         
@@ -265,7 +265,7 @@ public class Player : GridMover {
             //x = Mathf.Abs(x);
 
             //if (x + y == 2) makePlayerMoveTorwards(_dir);
-            if (possibleDirections.Contains(_dir.normalized)) makePlayerMoveTorwards(_dir);
+            if (possibleDirections.Contains(_dir.normalized)) player.makeMoveTorwardsDirection(_dir);
         }
     }
     //---------------------------------- pawn
@@ -280,7 +280,7 @@ public class Player : GridMover {
 
         public override void Move(ref Vector2 _dir) {
             if (_dir == startDirection)
-               makePlayerMoveTorwards(_dir);
+               player.makeMoveTorwardsDirection(_dir);
         }
     }
     //---------------------------------- horse
@@ -297,7 +297,7 @@ public class Player : GridMover {
         public override void Move(ref Vector2 _dir) {
 
             if (possibleDirections.Contains(_dir.normalized)) {
-                makePlayerMoveTorwards(_dir);
+                player.makeMoveTorwardsDirection(_dir);
                 if(isHorizzontalPhase)lastHorizDirection = _dir;
                 switchPhase();
             }
