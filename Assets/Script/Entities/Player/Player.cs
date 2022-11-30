@@ -19,6 +19,7 @@ public class Player : GridMover {
     [SerializeField] List<GameObject> possibleMovementIndicators;
 
     public bool IsVisible { get; private set; } = true;
+    public bool EnablePossibleMovesIndicators = true;
 
     private RewindManager rewindManager;
     private float lastTimeAbilityUsed;
@@ -70,6 +71,7 @@ public class Player : GridMover {
     protected override void OnCellChanged() {
         rewindManager.RegisterFrame(CurrentCell);
         playerState.RefreshPossibleMoveIndicators();
+        if (!EnablePossibleMovesIndicators) EnablePossibleMovesIndicators = true;
     }
 
     protected override void OnDirectionChanged() { }
@@ -175,23 +177,26 @@ public class Player : GridMover {
         protected List<Vector2> possibleDirections;
 
         public void RefreshPossibleMoveIndicators() {
-            for (int i = 0; i < possibleDirections.Count; i++) {
-                WorldCell targetCell = WorldGrid.Instance.GetAdjacentCell(player.currentCell, possibleDirections[i]);
-                if (targetCell) {
-                    player.possibleMovementIndicators[i].SetActive(true);
-                    player.possibleMovementIndicators[i].transform.position = targetCell.Position;
+            if (player.EnablePossibleMovesIndicators) {
+                for (int i = 0; i < possibleDirections.Count; i++) {
+                    WorldCell targetCell = WorldGrid.Instance.GetAdjacentCell(player.currentCell, possibleDirections[i]);
+                    if (targetCell) {
+                        player.possibleMovementIndicators[i].SetActive(true);
+                        player.possibleMovementIndicators[i].transform.position = targetCell.Position;
+                    }
+                    else {
+                        player.possibleMovementIndicators[i].SetActive(false);
+                    }
                 }
-                else {
+
+                //deactivating unused indicators
+                for (int i = possibleDirections.Count; i < player.possibleMovementIndicators.Count - 1; i++)
                     player.possibleMovementIndicators[i].SetActive(false);
-                }
+
+                //setting allways present indicator under player
+                player.possibleMovementIndicators[player.possibleMovementIndicators.Count - 1].transform.position = player.currentCell.Position;
             }
-
-            //deactivating unused indicators
-            for (int i = possibleDirections.Count; i < player.possibleMovementIndicators.Count-1; i++)
-                player.possibleMovementIndicators[i].SetActive(false);
-
-            //setting allways present indicator under player
-            player.possibleMovementIndicators[player.possibleMovementIndicators.Count-1].transform.position = player.currentCell.Position;
+            else foreach (GameObject indicator in player.possibleMovementIndicators) indicator.SetActive(false);
         }
 
         //protected void makePlayerMoveTorwards(Vector2 _dir) {

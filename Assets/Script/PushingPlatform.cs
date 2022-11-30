@@ -17,8 +17,11 @@ public class PushingPlatform : MonoBehaviour
         if (cell.CurrentObject) {
             GridMover otherMover = cell.CurrentObject.GetComponent<GridMover>();
             if (otherMover) {
-                Debug.Log("PUSH OBJECT");
+                otherMover.CanRotate = false;
                 otherMover.makeMoveTorwardsDirection(WorldGrid.Instance.ConvertToVectorTwo(transform.forward));
+
+                Player otherPlayer = cell.CurrentObject.GetComponent<Player>();
+                if (otherPlayer) otherPlayer.EnablePossibleMovesIndicators = false;
             }
         }
     }

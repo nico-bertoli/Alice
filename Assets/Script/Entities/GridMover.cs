@@ -9,6 +9,7 @@ public abstract class GridMover : GridObject
     [SerializeField] private float rotationSpeed;
 
     public bool CanMove { get; set; } = false;
+    public bool CanRotate { get; set; } = true;
     protected WorldCell targetCell;
     private WorldCell previousCell;
     protected Vector3 previousDirection;
@@ -26,10 +27,11 @@ public abstract class GridMover : GridObject
     protected void MoveToTarget() {
         if (targetCell) {
             transform.position = Vector3.MoveTowards(transform.position, targetCell.Position, moveSpeed * Time.deltaTime);
-            currentCell = WorldGrid.Instance.GetCellAtPos(transform.position);
             if(Vector3.Distance(transform.position, targetCell.Position) < Mathf.Epsilon) {
                 transform.position = targetCell.Position;
+                currentCell = targetCell;
                 targetCell = null;
+                CanRotate = true;
             }
             if (previousCell != CurrentCell) {
                 if(previousCell)previousCell.CurrentObject = null;
@@ -70,20 +72,22 @@ public abstract class GridMover : GridObject
     }
 
     protected void RotateTorwardsTarget() {
-        Vector3 forward;
+        if (CanRotate) {
+            Vector3 forward;
 
-        if (targetCell)
-            forward = (targetCell.Position - transform.position).normalized;
-        else
-            forward = Vector3.ProjectOnPlane(previousDirection, Vector3.up);
+            if (targetCell)
+                forward = (targetCell.Position - transform.position).normalized;
+            else
+                forward = Vector3.ProjectOnPlane(previousDirection, Vector3.up);
 
             if (forward != Vector3.zero) {
-               RotateAsVector(forward);
+                RotateAsVector(forward);
                 if (forward != previousDirection) {
                     previousDirection = forward;
                     OnDirectionChanged();
                 }
             }
+        }
     }
 
     protected void RotateAwayFromTarget() {
