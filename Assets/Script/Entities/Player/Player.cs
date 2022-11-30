@@ -53,6 +53,9 @@ public class Player : GridMover {
             case eRoles.BISHOP:
                 playerState = new PlayerBishopState(this);
                 break;
+            case eRoles.HORSE:
+                playerState = new PlayerHorseState(this);
+                break;
         }
     }
 
@@ -210,12 +213,36 @@ public class Player : GridMover {
                 }
             }
         }
+
+        protected Vector2 adjustStartDirection(Vector2 _startDirection) {
+
+            //caso in cui travestimento preso con alfiere
+            if (_startDirection != Vector2.up && _startDirection != Vector2.down && _startDirection != Vector2.right && _startDirection != Vector2.left) {
+                if (_startDirection.x > 0) _startDirection = Vector2.right;
+                else _startDirection = Vector2.up;
+            }
+
+            return _startDirection.normalized;
+        }
+
+        public List<Vector2> GetDiagonalDirections() {
+            return new List<Vector2> { 
+                (Vector2.up+Vector2.right).normalized,
+                (Vector2.up+Vector2.left).normalized,
+                (Vector2.down+Vector2.right).normalized,
+                (Vector2.down+Vector2.left).normalized,
+            };
+        }
+
+        public List<Vector2> GetHorizzontalDirections() {
+            return new List<Vector2> { Vector2.up, Vector2.down, Vector2.right, Vector2.left };
+        }
     }
-    //----------------------------------
+    //---------------------------------- default / tower
     private class PlayerDefaultState : AbsPlayerState {
 
         public PlayerDefaultState(Player _player) : base(_player) {
-             possibleDirections = new List<Vector2> { Vector2.up, Vector2.down, Vector2.right, Vector2.left };
+             possibleDirections = GetHorizzontalDirections();
         }
 
         public override void Move(ref Vector2 _dir) {
@@ -224,45 +251,77 @@ public class Player : GridMover {
 
         
     }
-    //----------------------------------
+    //---------------------------------- bishop
     private class PlayerBishopState : AbsPlayerState {
         public PlayerBishopState(Player _player) : base(_player) {
-            possibleDirections = new List<Vector2> { 
-                (Vector2.up+Vector2.right).normalized,
-                (Vector2.up+Vector2.left).normalized,
-                (Vector2.down+Vector2.right).normalized,
-                (Vector2.down+Vector2.left).normalized,
-            };
+            possibleDirections = GetDiagonalDirections();
         }
 
         public override void Move(ref Vector2 _dir) {
-            int y = Mathf.RoundToInt(_dir.y);
-            int x = Mathf.RoundToInt(_dir.x);
+            //int y = Mathf.RoundToInt(_dir.y);
+            //int x = Mathf.RoundToInt(_dir.x);
 
-            y = Mathf.Abs(y);
-            x = Mathf.Abs(x);
+            //y = Mathf.Abs(y);
+            //x = Mathf.Abs(x);
 
-            if (x + y == 2) makePlayerMoveTorwards(_dir);
+            //if (x + y == 2) makePlayerMoveTorwards(_dir);
+            if (possibleDirections.Contains(_dir.normalized)) makePlayerMoveTorwards(_dir);
         }
     }
-    //----------------------------------
+    //---------------------------------- pawn
     private class PlayerPawnState : AbsPlayerState {
         private Vector2 startDirection;
         public PlayerPawnState(Player _player, Vector2 _startDirection) : base(_player) {
 
-            //caso in cui travestimento preso con alfiere
-            if (_startDirection != Vector2.up && _startDirection != Vector2.down && _startDirection != Vector2.right && _startDirection != Vector2.left) {
-                if (_startDirection.x > 0) startDirection = Vector2.right;
-                else startDirection = Vector2.up;
-            }
+            startDirection = adjustStartDirection(_startDirection);
 
-            startDirection = _startDirection.normalized;
             possibleDirections = new List<Vector2> { startDirection };
             }
 
         public override void Move(ref Vector2 _dir) {
             if (_dir == startDirection)
                makePlayerMoveTorwards(_dir);
+        }
+    }
+    //---------------------------------- horse
+    private class PlayerHorseState : AbsPlayerState {
+
+        private bool isHorizzontalPhase;
+        private Vector2 lastHorizDirection;
+
+        public PlayerHorseState(Player _player) : base(_player) {
+            isHorizzontalPhase = true;
+            possibleDirections = GetHorizzontalDirections();
+        }
+
+        public override void Move(ref Vector2 _dir) {
+
+            if (possibleDirections.Contains(_dir.normalized)) {
+                makePlayerMoveTorwards(_dir);
+                if(isHorizzontalPhase)lastHorizDirection = _dir;
+                switchPhase();
+            }
+        }
+
+        private void switchPhase() {
+            isHorizzontalPhase = !isHorizzontalPhase;
+            if (isHorizzontalPhase) {
+                possibleDirections = GetHorizzontalDirections();
+            }
+            else {
+                possibleDirections = GetDiagonalDirections();
+                List<Vector2> toRemove = new List<Vector2>();
+                for(int i = 0; i < possibleDirections.Count; i++) {
+                    if (
+                        Mathf.Sign(possibleDirections[i].x) != Mathf.Sign(lastHorizDirection.x) && lastHorizDirection.x != 0
+                        ||
+                        Mathf.Sign(possibleDirections[i].y) != Mathf.Sign(lastHorizDirection.y) && lastHorizDirection.y != 0
+                        )
+                        toRemove.Add(possibleDirections[i]);
+                }
+                foreach (Vector2 vect in toRemove) possibleDirections.Remove(vect);
+                    
+            }
         }
     }
 
