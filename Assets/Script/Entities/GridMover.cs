@@ -33,7 +33,7 @@ public abstract class GridMover : GridObject
                 targetCell = null;
                 CanRotate = true;
             }
-            if (previousCell != CurrentCell) {
+            if (previousCell != WorldGrid.Instance.GetCellAtPos(transform.position)) {
                 if(previousCell)previousCell.CurrentObject = null;
                 previousCell = CurrentCell;
                 CurrentCell.CurrentObject = gameObject;

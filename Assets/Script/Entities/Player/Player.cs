@@ -195,6 +195,7 @@ public class Player : GridMover {
 
                 //setting allways present indicator under player
                 player.possibleMovementIndicators[player.possibleMovementIndicators.Count - 1].transform.position = player.currentCell.Position;
+                player.possibleMovementIndicators[player.possibleMovementIndicators.Count - 1].SetActive(true);
             }
             else foreach (GameObject indicator in player.possibleMovementIndicators) indicator.SetActive(false);
         }

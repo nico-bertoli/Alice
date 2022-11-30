@@ -2011,6 +2011,7 @@ MonoBehaviour:
   - {fileID: 1137327946}
   - {fileID: 2069250442}
   - {fileID: 1632423191}
+  EnablePossibleMovesIndicators: 1
   Disguise: 0
 --- !u!114 &1454039003
 MonoBehaviour:
@@ -2259,6 +2260,38 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 799415060432912956, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 799415060544435721, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 799415060560324718, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 799415060698157772, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 799415060788901103, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 799415060900544687, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 799415060990307986, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 799415061444495353, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4916720023455149834, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
       propertyPath: m_Name
       value: TowerSystem
@@ -2306,6 +2339,18 @@ PrefabInstance:
     - target: {fileID: 4916720023455149835, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4916720023636154826, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8227509362997656339, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8227509364014597388, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
@@ -8111,6 +8156,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: PawnSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 8873945443846806008, guid: 32a4774e21070e04487e8b018c7df463, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8873945443846806009, guid: 32a4774e21070e04487e8b018c7df463, type: 3}
       propertyPath: m_RootOrder
       value: 7
@@ -8478,6 +8527,10 @@ PrefabInstance:
     - target: {fileID: 8184818688865801376, guid: 886d111af4104bf409a7d5752abb11fa, type: 3}
       propertyPath: m_Name
       value: BishopSystem
+      objectReference: {fileID: 0}
+    - target: {fileID: 8184818688865801376, guid: 886d111af4104bf409a7d5752abb11fa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8184818688865801377, guid: 886d111af4104bf409a7d5752abb11fa, type: 3}
       propertyPath: m_RootOrder
