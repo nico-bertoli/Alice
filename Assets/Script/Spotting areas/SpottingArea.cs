@@ -12,7 +12,7 @@ public class SpottingArea : MonoBehaviour
 
     public eRoles Role { get; set;}
 
-    private const float VIEW_SECONDS_FOR_GAMEOVER = 0.05f;
+    private const float VIEW_SECONDS_FOR_GAMEOVER = 0.5f;
 
     private void Start() {
         player = GameController.Instance.Player;
@@ -40,6 +40,8 @@ public class SpottingArea : MonoBehaviour
                 GameController.Instance.GameOver();
             else if (firstPlayerSeenTime == null)
                 firstPlayerSeenTime = Time.time;
+
+            if (firstPlayerSeenTime != null) Debug.Log(Time.time - firstPlayerSeenTime);
         }
         else {
             if (Time.time - firstPlayerSeenTime > VIEW_SECONDS_FOR_GAMEOVER + 0.1f)

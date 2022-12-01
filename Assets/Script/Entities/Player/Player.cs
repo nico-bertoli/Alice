@@ -128,7 +128,7 @@ public class Player : GridMover {
 
         float originalMoveSpeed = moveSpeed;
         moveSpeed *= rewindAnimationSpeed;
-        for(int i = _frames.Count-1; i> 0; i--) {
+        for(int i = _frames.Count-1; i>= 0; i--) {
             targetCell = _frames[i].Cell;
             yield return new WaitForSeconds(((float)_frames[i].EndTime - _frames[i].StratTime)/rewindAnimationSpeed);
         }
