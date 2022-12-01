@@ -23,7 +23,6 @@ public class SpottingArea : MonoBehaviour
 
     public void SetCell(WorldCell _cell) {
         if (_cell != null) {
-            Debug.Log("set cell called with cell: "+ cell);
             cell = _cell;
             transform.position = _cell.Position;
             model.SetActive(true);

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PushingPlatform : MonoBehaviour
+public abstract class Platform : MonoBehaviour
 {
     private WorldCell cell;
 
@@ -18,11 +18,14 @@ public class PushingPlatform : MonoBehaviour
             GridMover otherMover = cell.CurrentObject.GetComponent<GridMover>();
             if (otherMover) {
                 otherMover.CanRotate = false;
-                otherMover.makeMoveTorwardsDirection(WorldGrid.Instance.ConvertToVectorTwo(transform.forward));
+                otherMover.makeMoveTorwardsDirection(DefineDirection(otherMover));
 
                 Player otherPlayer = cell.CurrentObject.GetComponent<Player>();
                 if (otherPlayer) otherPlayer.EnablePossibleMovesIndicators = false;
             }
         }
     }
+
+    protected abstract Vector2 DefineDirection(GridMover other);
+
 }
