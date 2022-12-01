@@ -200,26 +200,6 @@ public class Player : GridMover {
             else foreach (GameObject indicator in player.possibleMovementIndicators) indicator.SetActive(false);
         }
 
-        //protected void makePlayerMoveTorwards(Vector2 _dir) {
-        //    if (player.targetCell == null) {
-
-        //        WorldCell target = WorldGrid.Instance.GetAdjacentCell(player.currentCell, _dir);
-        //        if (target != null) {
-
-        //            GameObject targetObj = target.CurrentObject;
-
-        //            if (targetObj != null && targetObj.tag == "Dor")
-        //                targetObj.GetComponent<Door>().TryOpenDor();
-
-        //            if (targetObj != null && targetObj.tag == "PushableBlock")
-        //                targetObj.GetComponent<PushableBlock>().Push(_dir);
-
-        //            if (targetObj == null)
-        //                player.targetCell = WorldGrid.Instance.GetAdjacentCell(player.currentCell, _dir);
-        //        }
-        //    }
-        //}
-
         protected Vector2 adjustStartDirection(Vector2 _startDirection) {
 
             //caso in cui travestimento preso con alfiere
@@ -264,13 +244,6 @@ public class Player : GridMover {
         }
 
         public override void Move(ref Vector2 _dir) {
-            //int y = Mathf.RoundToInt(_dir.y);
-            //int x = Mathf.RoundToInt(_dir.x);
-
-            //y = Mathf.Abs(y);
-            //x = Mathf.Abs(x);
-
-            //if (x + y == 2) makePlayerMoveTorwards(_dir);
             if (possibleDirections.Contains(_dir.normalized)) player.makeMoveTorwardsDirection(_dir);
         }
     }
