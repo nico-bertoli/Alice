@@ -28,6 +28,8 @@ public class Enemy : GridMover
     }
 
     protected override void Update() {
+        Debug.Log(targetCell);
+
         SetupTarget();
 
         if(CanMove)
@@ -44,9 +46,12 @@ public class Enemy : GridMover
     private void SetupTarget() {
         if(waypoints != null && waypoints.Count > 0 && targetCell == null) {
             Debug.Log("setup target");
-            targetCell = WorldGrid.Instance.GetCellAtPos(waypoints[wayPointIndex++].position);
-            if (wayPointIndex == waypoints.Count)
-                wayPointIndex = 0;
+
+            wayPointIndex++;
+            if (wayPointIndex == waypoints.Count)wayPointIndex = 0;
+
+            targetCell = WorldGrid.Instance.GetCellAtPos(waypoints[wayPointIndex].position);
+            
         }
     }
 

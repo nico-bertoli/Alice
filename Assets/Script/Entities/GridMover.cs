@@ -27,7 +27,7 @@ public abstract class GridMover : GridObject
     protected void MoveToTarget() {
         if (targetCell) {
             transform.position = Vector3.MoveTowards(transform.position, targetCell.Position, moveSpeed * Time.deltaTime);
-            if(Vector3.Distance(transform.position, targetCell.Position) < Mathf.Epsilon) {
+            if (Vector3.Distance(transform.position, targetCell.Position) < 0.1f) {
                 transform.position = targetCell.Position;
                 currentCell = targetCell;
                 targetCell = null;
