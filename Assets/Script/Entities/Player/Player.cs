@@ -18,6 +18,12 @@ public class Player : GridMover {
 
     [SerializeField] List<GameObject> possibleMovementIndicators;
 
+    [SerializeField] GameObject AliceModel;
+    [SerializeField] GameObject PedoneModel;
+    [SerializeField] GameObject TorreModel;
+    [SerializeField] GameObject AlfiereModel;
+    [SerializeField] GameObject CavalloModel;
+
     public bool IsVisible { get; private set; } = true;
     public bool EnablePossibleMovesIndicators = true;
 
@@ -46,16 +52,23 @@ public class Player : GridMover {
             case eRoles.PLAYER:
             case eRoles.TOWER:
                 playerState = new PlayerDefaultState(this);
-
+                AliceModel.SetActive(false);
+                TorreModel.SetActive(true);
                 break;
             case eRoles.PAWN:
                 playerState = new PlayerPawnState(this,WorldGrid.Instance.ConvertToVectorTwo(transform.forward));
+                AliceModel.SetActive(false);
+                PedoneModel.SetActive(true);
                 break;
             case eRoles.BISHOP:
                 playerState = new PlayerBishopState(this);
+                AliceModel.SetActive(false);
+                AlfiereModel.SetActive(true);
                 break;
             case eRoles.HORSE:
                 playerState = new PlayerHorseState(this);
+                AliceModel.SetActive(false);
+                CavalloModel.SetActive(true);
                 break;
         }
     }
@@ -94,6 +107,11 @@ public class Player : GridMover {
         if (InputManager.Instance.IsDroppingDress && Disguise != eRoles.PLAYER) {
             playerState = new PlayerDefaultState(this);
             playerState.RefreshPossibleMoveIndicators();
+            AliceModel.SetActive(true);
+            TorreModel.SetActive(false);
+            AlfiereModel.SetActive(false);
+            CavalloModel.SetActive(false);
+            PedoneModel.SetActive(false);
         }
     }
 
