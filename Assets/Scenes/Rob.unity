@@ -1020,19 +1020,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8227509362997656339, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8227509362997656339, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8227509363357323777, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8227509364014597388, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7e30e9ffc98b7f46917a6c89ef9d13a, type: 3}
@@ -3334,6 +3334,11 @@ MonoBehaviour:
   - {fileID: 1137327946}
   - {fileID: 2069250442}
   - {fileID: 1632423191}
+  AliceModel: {fileID: 0}
+  PedoneModel: {fileID: 0}
+  TorreModel: {fileID: 0}
+  AlfiereModel: {fileID: 0}
+  CavalloModel: {fileID: 0}
   EnablePossibleMovesIndicators: 1
   Disguise: 0
 --- !u!114 &1454039003
