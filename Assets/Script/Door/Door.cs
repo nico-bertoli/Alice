@@ -15,7 +15,9 @@ public class Door : GridObject
         if (keysCollected.Contains(id)) {
             keysCollected.Remove(id);
             currentCell.CurrentObject = null;
-            Destroy(gameObject);
+            //Destroy(gameObject);
+            gameObject.SetActive(false);
+            GameController.Instance.DoorisOpen = true;
         }
     }
 }

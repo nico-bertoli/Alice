@@ -36,8 +36,9 @@ public class SpottingArea : MonoBehaviour
 
     private void handlePlayerVision() {
         if (cell == player.CurrentCell && cell != null && player.IsVisible && IsRoleLowerThan(player.Disguise,Role)) {
-            if (firstPlayerSeenTime != null && Time.time - firstPlayerSeenTime >= VIEW_SECONDS_FOR_GAMEOVER)
-                GameController.Instance.GameOver();
+            if (firstPlayerSeenTime != null)
+                { if (Time.time - firstPlayerSeenTime >= VIEW_SECONDS_FOR_GAMEOVER)
+                GameController.Instance.GameOver(); }
             else if (firstPlayerSeenTime == null)
                 firstPlayerSeenTime = Time.time;
 

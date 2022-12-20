@@ -4,6 +4,7 @@ using UnityEditor.Timeline;
 using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using static RolesManager;
+using System;
 
 public class Player : GridMover {
     [SerializeField] float rewindSeconds = 5f;
@@ -33,12 +34,18 @@ public class Player : GridMover {
     private MeshRenderer meshRenderer;
     private AbsPlayerState playerState;
     public eRoles Disguise = eRoles.PLAYER;
+    public Canvas PausePanel;
+    public GameObject UiPanel;
+    UIController uiscript;
+    PauseControl pausescript;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
         meshRenderer = transform.GetChild(0).GetComponent<MeshRenderer>();
         playerState = new PlayerDefaultState(this);
         for (int i = 0; i < possibleMovementIndicators.Count - 1; i++) possibleMovementIndicators[i].SetActive(true);
+        pausescript = PausePanel.GetComponent<PauseControl>();
+        uiscript = UiPanel.GetComponent<UIController>();
     }
 
     protected override void Start() {
@@ -52,22 +59,22 @@ public class Player : GridMover {
             case eRoles.PLAYER:
             case eRoles.TOWER:
                 playerState = new PlayerDefaultState(this);
-                AliceModel.SetActive(false);
+                resetModels();
                 TorreModel.SetActive(true);
                 break;
             case eRoles.PAWN:
                 playerState = new PlayerPawnState(this,WorldGrid.Instance.ConvertToVectorTwo(transform.forward));
-                AliceModel.SetActive(false);
+                resetModels();
                 PedoneModel.SetActive(true);
                 break;
             case eRoles.BISHOP:
                 playerState = new PlayerBishopState(this);
-                AliceModel.SetActive(false);
+                resetModels();
                 AlfiereModel.SetActive(true);
                 break;
             case eRoles.HORSE:
                 playerState = new PlayerHorseState(this);
-                AliceModel.SetActive(false);
+                resetModels();
                 CavalloModel.SetActive(true);
                 break;
         }
@@ -101,18 +108,35 @@ public class Player : GridMover {
         }
         handleDressDrop();
         MoveToTarget();
+        handlePauseWithPKey();
+    }
+
+    private void handlePauseWithPKey()
+    {
+        if (InputManager.Instance.IsPaused && !GameController.Instance.IsOver && !GameController.Instance.PlayerWon)
+        {
+            pausescript.ShowPause();
+            //Debug.Log(InputManager.Instance.IsPaused + " " + GameController.Instance.IsOver + " " + GameController.Instance.PlayerWon);
+        }
     }
 
     private void handleDressDrop() {
         if (InputManager.Instance.IsDroppingDress && Disguise != eRoles.PLAYER) {
             playerState = new PlayerDefaultState(this);
             playerState.RefreshPossibleMoveIndicators();
+            resetModels();
             AliceModel.SetActive(true);
-            TorreModel.SetActive(false);
-            AlfiereModel.SetActive(false);
-            CavalloModel.SetActive(false);
-            PedoneModel.SetActive(false);
+            Disguise = eRoles.PLAYER;
         }
+    }
+
+    void resetModels()
+    {
+        AliceModel.SetActive(false);
+        TorreModel.SetActive(false);
+        AlfiereModel.SetActive(false);
+        CavalloModel.SetActive(false);
+        PedoneModel.SetActive(false);
     }
 
     /// <summary>
@@ -211,7 +235,7 @@ public class Player : GridMover {
                 for (int i = possibleDirections.Count; i < player.possibleMovementIndicators.Count - 1; i++)
                     player.possibleMovementIndicators[i].SetActive(false);
 
-                //setting allways present indicator under player
+                //setting always present indicator under player
                 player.possibleMovementIndicators[player.possibleMovementIndicators.Count - 1].transform.position = player.currentCell.Position;
                 player.possibleMovementIndicators[player.possibleMovementIndicators.Count - 1].SetActive(true);
             }

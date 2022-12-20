@@ -28,7 +28,7 @@ public class Enemy : GridMover
     }
 
     protected override void Update() {
-        Debug.Log(targetCell);
+        if(Time.timeScale != 0) Debug.Log(targetCell);
 
         SetupTarget();
 

@@ -50,6 +50,9 @@ public abstract class GridMover : GridObject
 
                 GameObject targetObj = target.CurrentObject;
 
+                if (targetObj != null && targetObj.tag == "Win")
+                    targetObj.GetComponent<Win>().TryOpenDor();
+
                 if (targetObj != null && targetObj.tag == "Dor")
                     targetObj.GetComponent<Door>().TryOpenDor();
 

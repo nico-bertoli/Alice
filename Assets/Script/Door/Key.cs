@@ -9,7 +9,11 @@ public class Key : MonoBehaviour
     private void OnTriggerEnter(Collider other) {
         if(other.gameObject.tag == "Player") {
             Door.KeyCollected(id);
-            Destroy(gameObject);
+            Win.KeyCollected(id);
+            FindObjectOfType<GameController>().DoorisOpen = false;
+            //Destroy(gameObject);
+            gameObject.SetActive(false);
+            FindObjectOfType<GameController>().KeyisTaken = true;
         }
     }
 }

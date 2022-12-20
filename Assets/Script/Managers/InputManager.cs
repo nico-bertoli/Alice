@@ -16,6 +16,8 @@ public class InputManager : Singleton<InputManager>
 
     public bool IsDroppingDress { get; set; }
 
+    public bool IsPaused { get; set; }
+
     //======================================== methods
     public void Move(InputAction.CallbackContext context) {
         if (context.performed) {
@@ -40,4 +42,13 @@ public class InputManager : Singleton<InputManager>
         else if (context.canceled)
             IsDroppingDress = false;
     }
+
+    public void Pause(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            IsPaused = true;
+        else if (context.canceled)
+            IsPaused = false;
+    }
+
 }

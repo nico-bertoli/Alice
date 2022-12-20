@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class WorldGrid : Singleton<WorldGrid> {
 
@@ -30,6 +31,10 @@ public class WorldGrid : Singleton<WorldGrid> {
     /// Called after grid generation is completed
     /// </summary>
     public Action OnGridGenerationCompleted;
+    /// <summary>
+    /// the current scene buildindex
+    /// </summary>
+    int sceneBuildIndex;
 
     /// <summary>
     /// returns adjacent cell in given direction (null if not existing)
@@ -57,6 +62,14 @@ public class WorldGrid : Singleton<WorldGrid> {
 
     private void Start() {
         StartCoroutine(CompleteGridGeneration());
+        /// <summary>
+        /// setting global variables values at start of the level
+        /// </summary>
+        sceneBuildIndex = SceneManager.GetActiveScene().buildIndex;
+        GameController.Instance.SceneBuildIndex = sceneBuildIndex;
+        GameController.Instance.IsOver = false;
+        InputManager.Instance.IsPaused = false;
+        GameController.Instance.PlayerWon = false;
     }
 
     /// <summary>
