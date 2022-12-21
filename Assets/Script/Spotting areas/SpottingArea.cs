@@ -5,14 +5,15 @@ using static RolesManager;
 
 public class SpottingArea : MonoBehaviour
 {
+    [Header("Settings")]
+    [SerializeField] float spotSeconds = 0.5f;
+    [Header("References")]
     [SerializeField] GameObject model;
     private WorldCell cell;
     private Player player;
     private static float? firstPlayerSeenTime = null;
 
     public eRoles Role { get; set;}
-
-    private const float VIEW_SECONDS_FOR_GAMEOVER = 0.5f;
 
     private void Start() {
         player = GameController.Instance.Player;
@@ -36,7 +37,7 @@ public class SpottingArea : MonoBehaviour
 
     private void handlePlayerVision() {
         if (cell == player.CurrentCell && cell != null && player.IsVisible && IsRoleLowerThan(player.Disguise,Role)) {
-            if (firstPlayerSeenTime != null && Time.time - firstPlayerSeenTime >= VIEW_SECONDS_FOR_GAMEOVER)
+            if (firstPlayerSeenTime != null && Time.time - firstPlayerSeenTime >= spotSeconds)
                 GameController.Instance.GameOver();
             else if (firstPlayerSeenTime == null)
                 firstPlayerSeenTime = Time.time;
@@ -44,7 +45,7 @@ public class SpottingArea : MonoBehaviour
             if (firstPlayerSeenTime != null) Debug.Log(Time.time - firstPlayerSeenTime);
         }
         else {
-            if (Time.time - firstPlayerSeenTime > VIEW_SECONDS_FOR_GAMEOVER + 0.1f)
+            if (Time.time - firstPlayerSeenTime > spotSeconds + 0.1f)
                 firstPlayerSeenTime = null;
         }
     }
