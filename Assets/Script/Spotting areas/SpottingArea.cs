@@ -12,7 +12,7 @@ public class SpottingArea : MonoBehaviour
 
     public eRoles Role { get; set;}
 
-    private const float VIEW_SECONDS_FOR_GAMEOVER = 0.5f;
+    private const float VIEW_SECONDS_FOR_GAMEOVER = 0.2f;
 
     private void Start() {
         player = GameController.Instance.Player;
