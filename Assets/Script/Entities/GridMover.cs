@@ -50,11 +50,24 @@ public abstract class GridMover : GridObject
 
                 GameObject targetObj = target.CurrentObject;
 
+                if (targetObj != null) Debug.Log(targetObj.tag);
+
                 if (targetObj != null && targetObj.tag == "Win")
+                {
                     targetObj.GetComponent<Win>().TryOpenDor();
 
+                    GameController.Instance.WinDoorisOpen = true;
+                    GameController.Instance.WinKeyisTaken = false;
+                    GameController.Instance.GameWon();
+
+                }
+
                 if (targetObj != null && targetObj.tag == "Dor")
+                {
                     targetObj.GetComponent<Door>().TryOpenDor();
+                    GameController.Instance.DoorisOpen = true;
+                    GameController.Instance.KeyisTaken = false;
+                }
 
                 if (targetObj != null && targetObj.tag == "PushableBlock")
                     targetObj.GetComponent<PushableBlock>().Push(_dir);

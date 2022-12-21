@@ -28,7 +28,7 @@ public class Enemy : GridMover
     }
 
     protected override void Update() {
-        if(Time.timeScale != 0) Debug.Log(targetCell);
+        //if(Time.timeScale != 0) Debug.Log(targetCell);
 
         SetupTarget();
 
@@ -45,7 +45,7 @@ public class Enemy : GridMover
     /// </summary>
     private void SetupTarget() {
         if(waypoints != null && waypoints.Count > 0 && targetCell == null) {
-            Debug.Log("setup target");
+            //Debug.Log("setup target");
 
             wayPointIndex++;
             if (wayPointIndex == waypoints.Count)wayPointIndex = 0;

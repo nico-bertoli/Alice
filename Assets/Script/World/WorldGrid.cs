@@ -81,7 +81,7 @@ public class WorldGrid : Singleton<WorldGrid> {
             yield return null;
         } while (WorldCell.registeredCells != WorldCell.numCells);
 
-        Debug.Log("matrix generation completed");
+        //Debug.Log("matrix generation completed");
         OnGridGenerationCompleted();
     }
 
@@ -125,7 +125,7 @@ public void RegisterCell(WorldCell _cell) {
         nCols = WorldCell.maxN + 1;
         nRows = WorldCell.maxM + 1;
         cells = new WorldCell[nRows, nCols];
-        Debug.Log("Created matrix of size: "+nRows + "," + nCols);
+        //Debug.Log("Created matrix of size: "+nRows + "," + nCols);
     }
 
     /// <summary>

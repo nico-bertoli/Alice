@@ -17,7 +17,10 @@ public class Door : GridObject
             currentCell.CurrentObject = null;
             //Destroy(gameObject);
             gameObject.SetActive(false);
-            GameController.Instance.DoorisOpen = true;
+            //GameController.Instance.DoorisOpen = true;
+            Debug.Log("soor is open true");
+
         }
     }
+
 }

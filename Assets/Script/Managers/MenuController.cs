@@ -115,7 +115,7 @@ public class MenuController : MonoBehaviour
                 NEXTLEVEL.gameObject.SetActive(false);
                 EXIT.gameObject.SetActive(false);
 
-                Text2Display.text = "GOOD JOB!\nTRY IT AGAIN!";
+                Text2Display.text = "GOOD JOB! TRY IT AGAIN!";
             }
             else if (GameController.Instance.PlayerWon)
             {

@@ -1,26 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Win : GridObject
 {
     [SerializeField] int id;
 
-    private static List<int> keysCollected = new List<int>();
+    private static List<int> winKeysCollected = new List<int>();
 
-    public static void KeyCollected(int _id) { keysCollected.Add(_id); }
+    public static void WinKeyCollected(int _id) { winKeysCollected.Add(_id); }
 
-    public void TryOpenDor()
-    {
-        if (keysCollected.Contains(id))
-        {
-            keysCollected.Remove(id);
+    public void TryOpenDor() {
+        if (winKeysCollected.Contains(id)) {
+            winKeysCollected.Remove(id);
             currentCell.CurrentObject = null;
-            Destroy(gameObject);
-            /// <summary>
-            /// testing the player has won case
-            /// </summary>             
-            GameController.Instance.GameWon();
+            //Destroy(gameObject);
+            gameObject.SetActive(false);         
+            //GameController.Instance.GameWon();
+            Debug.Log("swinoor is open true");
         }
     }
 }

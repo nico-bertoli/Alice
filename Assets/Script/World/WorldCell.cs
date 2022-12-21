@@ -48,10 +48,10 @@ public class WorldCell : MonoBehaviour
     }
 
     private void Start() {
-        Debug.Log("num cells: " + numCells);
+        //Debug.Log("num cells: " + numCells);
         registeredCells++;
         WorldGrid.Instance.RegisterCell(this);
-        Debug.Log("registered cells: " + numCells);
+        //Debug.Log("registered cells: " + numCells);
     }
 
     public override string ToString() {

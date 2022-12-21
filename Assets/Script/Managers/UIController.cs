@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class UIController : MonoBehaviour
+public class UIController : Singleton<GameController>
 {
     public List<Material> PotionImages = new List<Material>();
     public List<Material> KeyImages = new List<Material>();
@@ -22,11 +22,29 @@ public class UIController : MonoBehaviour
     Material noimage, noimage2, noimage3;
 
 
-    private void Awake()
-    {
+    //private void Awake()
+    //{
         
-        nopotion = PotionImages.Count -1;
-        nodress = DressImages.Count -1;
+    //    nopotion = PotionImages.Count -1;
+    //    nodress = DressImages.Count -1;
+    //    nokey = KeyImages.Count - 1;
+
+    //    noimage = DRESS.material;
+    //    noimage2 = POTION.material;
+    //    noimage3 = KEY.material;
+
+    //    CloseUI();
+
+    //}
+
+
+    // Start is called before the first frame update
+    private void Start()
+    {
+        player = FindObjectOfType<Player>();
+
+        nopotion = PotionImages.Count - 1;
+        nodress = DressImages.Count - 1;
         nokey = KeyImages.Count - 1;
 
         noimage = DRESS.material;
@@ -34,19 +52,10 @@ public class UIController : MonoBehaviour
         noimage3 = KEY.material;
 
         CloseUI();
-
-    }
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        player = FindObjectOfType<Player>();
-        CloseUI();
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
         if (SceneManager.GetActiveScene().buildIndex > 0)
         { 
@@ -74,6 +83,9 @@ public class UIController : MonoBehaviour
 
             //Debug.Log(player.Disguise + "," + InputManager.Instance.IsDroppingDress);
             if (player.Disguise != RolesManager.eRoles.PLAYER) DRESS.gameObject.SetActive(true);
+            else ShowNoDress();
+            if (Instance.DoorisOpen) ShowNoKey();
+            //if (!player.IsVisible) 
             useCell();
 
         }
@@ -82,26 +94,27 @@ public class UIController : MonoBehaviour
     void useCell()
     {
 
-        if (!player.IsVisible) NoPotion(); // POTION.material = PotionImages[0];
-        else if (GameController.Instance.KeyisTaken) { KEY.material = KeyImages[0]; KEY.gameObject.SetActive(true); }
-        else if (GameController.Instance.DoorisOpen) NoKey();
+        //if (!player.IsVisible) NoPotion(); // POTION.material = PotionImages[0];
+        //else 
+        if (Instance.KeyisTaken) { KEY.material = KeyImages[0]; KEY.gameObject.SetActive(true); }
+        else if (Instance.DoorisOpen || Instance.WinDoorisOpen) ShowNoKey();
         else if (player.Disguise == RolesManager.eRoles.PLAYER) DRESS.gameObject.SetActive(false);
-        else { NoPotion(); NoKey(); }
+        else { ShowNoPotion(); ShowNoKey(); }
     }
 
-    public void NoDress()
+    public void ShowNoDress()
     {
         DRESS.material = DressImages[nodress];
         DRESS.gameObject.SetActive(false);
     }
 
-    public void NoPotion()
+    public void ShowNoPotion()
     {
         POTION.material = noimage2;
         POTION.gameObject.SetActive(false);
     }
 
-    public void NoKey()
+    public void ShowNoKey()
     {
         KEY.material = noimage3;
         KEY.gameObject.SetActive(false);

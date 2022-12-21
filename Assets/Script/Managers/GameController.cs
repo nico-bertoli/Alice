@@ -27,8 +27,10 @@ public class GameController : Singleton<GameController>
     [HideInInspector] public bool IsOver { get; set; }
     [HideInInspector] public bool PlayerWon { get; set; }
 
-    [HideInInspector] public bool KeyisTaken { get; set; }
+    [HideInInspector] public bool KeyisTaken { get; set; } 
     [HideInInspector] public bool DoorisOpen { get; set; }
+    [HideInInspector] public bool WinKeyisTaken { get; set; }
+    [HideInInspector] public bool WinDoorisOpen { get; set; }
 
     /// <summary>
     /// Setup here the maximum number of levels/scene in the game
@@ -45,6 +47,9 @@ public class GameController : Singleton<GameController>
         IsOver = true;
         InputManager.Instance.IsPaused = false;
         PlayerWon = false;
+        DoorisOpen = true;
+        WinDoorisOpen = true;
+
         StartCoroutine(resetScene());
             
     }
@@ -65,6 +70,8 @@ public class GameController : Singleton<GameController>
         IsOver = false;
         InputManager.Instance.IsPaused = false;
         PlayerWon = true;
+        DoorisOpen = true;
+        WinDoorisOpen = true;
 
         StartCoroutine(resetScene());
     }

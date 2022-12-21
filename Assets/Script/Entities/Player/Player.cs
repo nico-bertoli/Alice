@@ -1,10 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Timeline;
-using UnityEditor.Timeline.Actions;
 using UnityEngine;
 using static RolesManager;
-using System;
+
 
 public class Player : GridMover {
     [SerializeField] float rewindSeconds = 5f;
@@ -24,6 +22,7 @@ public class Player : GridMover {
     [SerializeField] GameObject TorreModel;
     [SerializeField] GameObject AlfiereModel;
     [SerializeField] GameObject CavalloModel;
+    [SerializeField] GameObject InvisibleModel;
 
     public bool IsVisible { get; private set; } = true;
     public bool EnablePossibleMovesIndicators = true;
@@ -35,8 +34,8 @@ public class Player : GridMover {
     private AbsPlayerState playerState;
     public eRoles Disguise = eRoles.PLAYER;
     public Canvas PausePanel;
-    public GameObject UiPanel;
-    UIController uiscript;
+    //public GameObject UiPanel;
+    //UIController uiscript;
     PauseControl pausescript;
 
     private void Awake() {
@@ -45,12 +44,13 @@ public class Player : GridMover {
         playerState = new PlayerDefaultState(this);
         for (int i = 0; i < possibleMovementIndicators.Count - 1; i++) possibleMovementIndicators[i].SetActive(true);
         pausescript = PausePanel.GetComponent<PauseControl>();
-        uiscript = UiPanel.GetComponent<UIController>();
+        //uiscript = UiPanel.GetComponent<UIController>();
     }
 
     protected override void Start() {
         base.Start();
         WorldGrid.Instance.OnGridGenerationCompleted += playerState.RefreshPossibleMoveIndicators;
+        getDisguise();
     }
 
     public void SetDisguise(eRoles _disguise) {
@@ -137,6 +137,7 @@ public class Player : GridMover {
         AlfiereModel.SetActive(false);
         CavalloModel.SetActive(false);
         PedoneModel.SetActive(false);
+        InvisibleModel.SetActive(false);
     }
 
     /// <summary>
@@ -177,6 +178,7 @@ public class Player : GridMover {
         moveSpeed = originalMoveSpeed;
 
         setRewindActive(false);
+        getDisguise();
     }
 
     protected override void Init() {
@@ -192,14 +194,44 @@ public class Player : GridMover {
     private IEnumerator ActivateInvisibilityCor(float _duation) {
         IsVisible = false;
         meshRenderer.material = invisibilityMaterial;
+        resetModels();
+        InvisibleModel.SetActive(true);
         yield return new WaitForSeconds(_duation);
         meshRenderer.material = normalMaterial;
+        getDisguise();
         IsVisible = true;
     }
 
+
+    void getDisguise()
+    {
+        resetModels();
+        
+        switch (Disguise)
+        {
+            case eRoles.PLAYER:                
+                AliceModel.SetActive(true);
+                break;
+            case eRoles.TOWER:
+                TorreModel.SetActive(true);
+                break;
+            case eRoles.PAWN:
+                PedoneModel.SetActive(true);
+                break;
+            case eRoles.BISHOP:
+                AlfiereModel.SetActive(true);
+                break;
+            case eRoles.HORSE:
+                CavalloModel.SetActive(true);
+                break;
+        }
+    }
+
     private void setRewindActive(bool _enable) {
-        IsVisible = !_enable;
         isRewindActivated = _enable;
+        if (_enable)
+            resetModels();
+        IsVisible = !_enable;
         rewindModel.SetActive(_enable);
         normalModel.SetActive(!_enable);
     }
