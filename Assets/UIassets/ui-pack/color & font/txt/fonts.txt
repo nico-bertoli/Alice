@@ -1,0 +1,11 @@
+* Inter regular
+- font-weight: 400
+- https://fonts.google.com/specimen/Inter?query=Inter
+
+* Inter medium
+- font-weight: 500
+- https://fonts.google.com/specimen/Inter?query=Inter
+
+* Inter bold
+- font-weight: 700
+- https://fonts.google.com/specimen/Inter?query=Inter
