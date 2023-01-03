@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class UIController : Singleton<GameController>
+public class UIController : MonoBehaviour
 {
     public List<Material> PotionImages = new List<Material>();
     public List<Material> KeyImages = new List<Material>();
@@ -84,7 +84,7 @@ public class UIController : Singleton<GameController>
             //Debug.Log(player.Disguise + "," + InputManager.Instance.IsDroppingDress);
             if (player.Disguise != RolesManager.eRoles.PLAYER) DRESS.gameObject.SetActive(true);
             else ShowNoDress();
-            if (Instance.DoorisOpen) ShowNoKey();
+            if (GameController.Instance.DoorisOpen) ShowNoKey();
             //if (!player.IsVisible) 
             useCell();
 
@@ -96,8 +96,8 @@ public class UIController : Singleton<GameController>
 
         //if (!player.IsVisible) NoPotion(); // POTION.material = PotionImages[0];
         //else 
-        if (Instance.KeyisTaken) { KEY.material = KeyImages[0]; KEY.gameObject.SetActive(true); }
-        else if (Instance.DoorisOpen || Instance.WinDoorisOpen) ShowNoKey();
+        if (GameController.Instance.KeyisTaken) { KEY.material = KeyImages[0]; KEY.gameObject.SetActive(true); }
+        else if (GameController.Instance.DoorisOpen || GameController.Instance.WinDoorisOpen) ShowNoKey();
         else if (player.Disguise == RolesManager.eRoles.PLAYER) DRESS.gameObject.SetActive(false);
         else { ShowNoPotion(); ShowNoKey(); }
     }
