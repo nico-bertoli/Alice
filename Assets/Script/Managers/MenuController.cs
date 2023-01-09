@@ -50,7 +50,7 @@ public class MenuController : MonoBehaviour
         GameController.Instance.IsOver = mc_over;
         GameController.Instance.PlayerWon = mc_haswon;
 
-        Debug.Log("in Start():" + lastScene + " " + mc_over + " " + mc_haswon);
+        //Debug.Log("in Start():" + lastScene + " " + mc_over + " " + mc_haswon);
 
         ActivateUI();
     }

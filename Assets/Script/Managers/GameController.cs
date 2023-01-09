@@ -82,7 +82,7 @@ public class GameController : Singleton<GameController>
         /// <summary>
         /// Calling the menu scene (buildindex == 0) 
         /// </summary> 
-        Debug.Log("index=" + SceneManager.GetActiveScene().buildIndex + ",SceneBuildIndex=" + SceneBuildIndex + " isOver=" + IsOver + " hasWon=" + PlayerWon);
+        //Debug.Log("index=" + SceneManager.GetActiveScene().buildIndex + ",SceneBuildIndex=" + SceneBuildIndex + " isOver=" + IsOver + " hasWon=" + PlayerWon);
 
         SaveHighScene(SceneBuildIndex, IsOver, PlayerWon);
 
