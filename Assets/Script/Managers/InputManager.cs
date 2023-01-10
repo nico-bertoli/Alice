@@ -16,6 +16,16 @@ public class InputManager : Singleton<InputManager>
 
     public bool IsDroppingDress { get; set; }
 
+    public bool IsCameraRotatingLeft { get; set; }
+
+    public bool IsCameraRotatingRight { get; set; }
+
+    public bool IsCameraUpdated { get; set; }
+
+    public bool IsCameraLeftUpdated { get; set; }
+
+    public bool IsCameraRightUpdated { get; set; }
+
     public bool IsPaused { get; set; }
 
     //======================================== methods
@@ -49,6 +59,22 @@ public class InputManager : Singleton<InputManager>
             IsPaused = true;
         else if (context.canceled)
             IsPaused = false;
+    }
+
+    public void RotateCameraLeft(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            IsCameraRotatingLeft = true;
+        else if (context.canceled)
+            IsCameraRotatingLeft = false;
+    }
+
+    public void RotateCameraRight(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            IsCameraRotatingRight = true;
+        else if (context.canceled)
+            IsCameraRotatingRight = false;
     }
 
 }

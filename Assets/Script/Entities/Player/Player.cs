@@ -24,6 +24,15 @@ public class Player : GridMover {
     [SerializeField] GameObject CavalloModel;
     [SerializeField] GameObject InvisibleModel;
 
+    [SerializeField] GameObject Camera;
+    [SerializeField] GameObject Camera1;
+    [SerializeField] GameObject Camera2;
+    [SerializeField] GameObject Camera3;
+    [SerializeField] GameObject Camera4;
+    int CurrentCamera = 0;
+    bool cameraUpdated = false;
+    int cameraTimes = 0;
+
     public bool IsVisible { get; private set; } = true;
     public bool EnablePossibleMovesIndicators = true;
 
@@ -108,6 +117,8 @@ public class Player : GridMover {
         }
         handleDressDrop();
         MoveToTarget();
+        handleCameraLeft();
+        handleCameraRight();
         handlePauseWithPKey();
     }
 
@@ -378,6 +389,69 @@ public class Player : GridMover {
         }
     }
 
+    // =============================================================== camera
 
+    private void handleCameraLeft()
+    {
+        if (InputManager.Instance.IsCameraRotatingLeft && !InputManager.Instance.IsCameraLeftUpdated)
+        {
+            CurrentCamera = (CurrentCamera - 1) % 4;
+            updateCamera();
+            InputManager.Instance.IsCameraLeftUpdated = true;
+            // Camera.gameObject.transform.Rotate(45.0f, 0.0f, 0.0f);
+        } else if (!InputManager.Instance.IsCameraRotatingLeft)
+        {
+            InputManager.Instance.IsCameraLeftUpdated = false;
+        }
+    }
+
+    private void handleCameraRight()
+    {
+        if (InputManager.Instance.IsCameraRotatingRight && !InputManager.Instance.IsCameraRightUpdated)
+        {
+            CurrentCamera = (CurrentCamera + 1) % 4;
+            updateCamera();
+            InputManager.Instance.IsCameraRightUpdated = true;
+            // Camera.gameObject.transform.Rotate(0.0f, -45.0f, 0.0f);
+        }
+        else if (!InputManager.Instance.IsCameraRotatingRight)
+        {
+            InputManager.Instance.IsCameraRightUpdated = false;
+        }
+    }
+
+    private void updateCamera()
+    {
+        if (CurrentCamera < 0) CurrentCamera = CurrentCamera + 4;
+        switch (CurrentCamera)
+        {
+            case 0:
+                Camera2.SetActive(false);
+                Camera3.SetActive(false);
+                Camera4.SetActive(false);
+                Camera1.SetActive(true);
+                break;
+            case 1:
+                Camera1.SetActive(false);
+                Camera3.SetActive(false);
+                Camera4.SetActive(false);
+                Camera2.SetActive(true);
+                break;
+            case 2:
+                Camera1.SetActive(false);
+                Camera2.SetActive(false);
+                Camera4.SetActive(false);
+                Camera3.SetActive(true);
+                break;
+            case 3:
+                Camera1.SetActive(false);
+                Camera2.SetActive(false);
+                Camera3.SetActive(false);
+                Camera4.SetActive(true);
+                break;
+            default:
+                break;
+        }
+    }
 
 }
