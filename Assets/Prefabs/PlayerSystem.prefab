@@ -225,7 +225,13 @@ MonoBehaviour:
   TorreModel: {fileID: 8891937630326806337}
   AlfiereModel: {fileID: 4682809691919309653}
   CavalloModel: {fileID: 3562718176274074281}
+  ResizedModel: {fileID: 0}
   InvisibleModel: {fileID: 1714510213076008456}
+  Camera: {fileID: 0}
+  Camera1: {fileID: 0}
+  Camera2: {fileID: 0}
+  Camera3: {fileID: 0}
+  Camera4: {fileID: 0}
   EnablePossibleMovesIndicators: 1
   Disguise: 0
   PausePanel: {fileID: 8003143297381080649}
@@ -6241,6 +6247,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4474067159232834849, guid: 1c272a6576381d443970b4f0e88cc320, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9191431466041185534, guid: 1c272a6576381d443970b4f0e88cc320, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

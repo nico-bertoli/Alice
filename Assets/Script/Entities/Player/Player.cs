@@ -22,6 +22,7 @@ public class Player : GridMover {
     [SerializeField] GameObject TorreModel;
     [SerializeField] GameObject AlfiereModel;
     [SerializeField] GameObject CavalloModel;
+    [SerializeField] GameObject ResizedModel;
     [SerializeField] GameObject InvisibleModel;
 
     [SerializeField] GameObject Camera;
@@ -29,9 +30,6 @@ public class Player : GridMover {
     [SerializeField] GameObject Camera2;
     [SerializeField] GameObject Camera3;
     [SerializeField] GameObject Camera4;
-    int CurrentCamera = 0;
-    bool cameraUpdated = false;
-    int cameraTimes = 0;
 
     public bool IsVisible { get; private set; } = true;
     public bool EnablePossibleMovesIndicators = true;
@@ -46,6 +44,7 @@ public class Player : GridMover {
     //public GameObject UiPanel;
     //UIController uiscript;
     PauseControl pausescript;
+    private int CurrentCamera = 0;
 
     private void Awake() {
         rewindManager = new RewindManager(rewindSeconds);
@@ -148,6 +147,7 @@ public class Player : GridMover {
         AlfiereModel.SetActive(false);
         CavalloModel.SetActive(false);
         PedoneModel.SetActive(false);
+        ResizedModel.SetActive(false);
         InvisibleModel.SetActive(false);
     }
 
@@ -202,6 +202,11 @@ public class Player : GridMover {
         StartCoroutine(ActivateInvisibilityCor(_duration));
     }
 
+    public void ActivateResizing(float _duration)
+    {
+        StartCoroutine(ActivateResizingCor(_duration));
+    }
+
     private IEnumerator ActivateInvisibilityCor(float _duation) {
         IsVisible = false;
         meshRenderer.material = invisibilityMaterial;
@@ -211,6 +216,16 @@ public class Player : GridMover {
         meshRenderer.material = normalMaterial;
         getDisguise();
         IsVisible = true;
+    }
+
+    private IEnumerator ActivateResizingCor(float _duation)
+    {
+        resetModels();
+        ResizedModel.SetActive(true);
+        yield return new WaitForSeconds(_duation);
+        ResizedModel.SetActive(false);
+        AliceModel.SetActive(true);
+        getDisguise();
     }
 
 
