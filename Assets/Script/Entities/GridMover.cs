@@ -50,16 +50,16 @@ public abstract class GridMover : GridObject
 
                 GameObject targetObj = target.CurrentObject;
 
-                if (targetObj != null) Debug.Log(targetObj.tag);
+                //if (targetObj != null) Debug.Log(targetObj.tag);
 
                 if (targetObj != null && targetObj.tag == "Win")
                 {
-                    targetObj.GetComponent<Win>().TryOpenDor();
-
-                    GameController.Instance.WinDoorisOpen = true;
-                    GameController.Instance.WinKeyisTaken = false;
-                    GameController.Instance.GameWon();
-
+                    if (targetObj.GetComponent<Win>().TryOpenDor())
+                    {
+                        GameController.Instance.WinDoorisOpen = true;
+                        GameController.Instance.WinKeyisTaken = false;
+                        GameController.Instance.GameWon();
+                    }
                 }
 
                 if (targetObj != null && targetObj.tag == "Dor")
@@ -71,9 +71,6 @@ public abstract class GridMover : GridObject
 
                 if (targetObj != null && targetObj.tag == "PushableBlock")
                     targetObj.GetComponent<PushableBlock>().Push(_dir);
-
-                if (targetObj != null && targetObj.tag == "Obstacle")
-                    targetObj.GetComponent<Obstacle>().NoMove(_dir);
 
                 if (targetObj == null)
                     targetCell = WorldGrid.Instance.GetAdjacentCell(currentCell, _dir);

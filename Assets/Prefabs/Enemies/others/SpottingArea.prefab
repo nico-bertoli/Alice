@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4706436384508792100}
   - component: {fileID: 2501279171398211202}
+  - component: {fileID: 5142270901641405698}
   m_Layer: 0
   m_Name: SpottingArea
-  m_TagString: Untagged
+  m_TagString: Spotarea
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -47,6 +48,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   model: {fileID: 4706436385576064155}
+  VIEW_SECONDS_FOR_GAMEOVER: 0.5
+--- !u!64 &5142270901641405698
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4706436384508792101}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 4
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &4706436385576064155
 GameObject:
   m_ObjectHideFlags: 0

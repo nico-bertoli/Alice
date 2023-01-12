@@ -11,14 +11,19 @@ public class Win : GridObject
 
     public static void WinKeyCollected(int _id) { winKeysCollected.Add(_id); }
 
-    public void TryOpenDor() {
-        if (winKeysCollected.Contains(id)) {
+    public bool TryOpenDor()
+    {
+        bool returnvalue = false;
+        if (winKeysCollected.Contains(id))
+        {
             winKeysCollected.Remove(id);
             currentCell.CurrentObject = null;
             //Destroy(gameObject);
-            gameObject.SetActive(false);         
+            gameObject.SetActive(false);
             //GameController.Instance.GameWon();
             Debug.Log("swinoor is open true");
+            returnvalue = true;
         }
+        return returnvalue;
     }
 }

@@ -12,7 +12,7 @@ public class SpottingArea : MonoBehaviour
 
     public eRoles Role { get; set;}
 
-    private const float VIEW_SECONDS_FOR_GAMEOVER = 0.2f;
+    public float VIEW_SECONDS_FOR_GAMEOVER ;
 
     private void Start() {
         player = GameController.Instance.Player;
@@ -21,13 +21,22 @@ public class SpottingArea : MonoBehaviour
         
     }
 
-    public void SetCell(WorldCell _cell) {
-        if (_cell != null) {
+    public void SetCell(WorldCell _cell)
+    {
+        model.SetActive(false);
+        if (_cell != null)
+        {
             cell = _cell;
             transform.position = _cell.Position;
-            model.SetActive(true);
+            GameObject targetObj = cell.CurrentObject;
+            if (targetObj != null && targetObj.CompareTag("Obstacle"))
+            {
+                model.SetActive(false);
+                //Debug.Log("spottingarea " + targetObj.tag);
+            }
+            else
+                model.SetActive(true);
         }
-        else model.SetActive(false);
     }
 
     private void Update() {

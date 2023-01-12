@@ -86,4 +86,21 @@ public class Enemy : GridMover
                 manager.HardSetArea();
         }
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        //Debug.Log("ontriggerenterEnemy: " + other.gameObject.name + "," + other.gameObject.tag + " " + this.name + "-" + this.tag);
+        //if (other.gameObject) Debug.Log(other.gameObject.tag); else Debug.Log("null");
+        if (other.gameObject.CompareTag("Obstacle"))
+        {
+            CanMove = false;
+            //change to the next waypoint
+            targetCell = null;
+            CanRotate = true;
+            SetupTarget();
+            RotateTorwardsTarget();
+            CanMove = true;
+        }
+        //add here collision with other enemies
+    }
 }

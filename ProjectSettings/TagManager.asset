@@ -8,6 +8,8 @@ TagManager:
   - PushableBlock
   - Win
   - Obstacle
+  - Spotarea
+  - Enemy
   layers:
   - Default
   - TransparentFX

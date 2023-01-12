@@ -41,8 +41,6 @@ public class Player : GridMover {
     private AbsPlayerState playerState;
     public eRoles Disguise = eRoles.PLAYER;
     public Canvas PausePanel;
-    //public GameObject UiPanel;
-    //UIController uiscript;
     PauseControl pausescript;
     private int CurrentCamera = 0;
 
@@ -52,7 +50,6 @@ public class Player : GridMover {
         playerState = new PlayerDefaultState(this);
         for (int i = 0; i < possibleMovementIndicators.Count - 1; i++) possibleMovementIndicators[i].SetActive(true);
         pausescript = PausePanel.GetComponent<PauseControl>();
-        //uiscript = UiPanel.GetComponent<UIController>();
     }
 
     protected override void Start() {
@@ -86,6 +83,8 @@ public class Player : GridMover {
                 CavalloModel.SetActive(true);
                 break;
         }
+        if (Disguise == eRoles.PLAYER) gameObject.tag = "Player";
+        else gameObject.tag = "Obstacle";
     }
 
     public WorldCell GetAdjacentCell(Vector2 _dir) {
@@ -137,6 +136,7 @@ public class Player : GridMover {
             resetModels();
             AliceModel.SetActive(true);
             Disguise = eRoles.PLAYER;
+            gameObject.tag = "Player";
         }
     }
 
@@ -466,6 +466,41 @@ public class Player : GridMover {
                 break;
             default:
                 break;
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        //Debug.Log("ontriggerenterPlayer: " + other.gameObject.name + "," + other.gameObject.tag + " " + this.name + "-" + this.tag);
+        //if (other.gameObject) Debug.Log(other.gameObject.tag); else Debug.Log("null");
+        //Collision with obstacles
+        if (other.gameObject.CompareTag("Obstacle"))
+        {
+            targetCell = null;
+            CanRotate = true;
+            RotateAwayFromTarget();
+        }
+        //Collision with Enemy
+        if (other.gameObject.CompareTag("Enemy"))
+        {
+            if (IsVisible && Disguise == eRoles.PLAYER)
+            {
+                GameController.Instance.GameOver();
+            }
+            else
+            {
+                if (!IsVisible) //when Player touch an Enemy looses ability
+                {
+                    meshRenderer.material = normalMaterial;
+                    getDisguise();
+                    IsVisible = true;
+                }
+                else
+                {
+                    targetCell = null;
+                    CanRotate = true;
+                    RotateAwayFromTarget();
+                }
+            }
         }
     }
 
